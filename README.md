@@ -1,7 +1,11 @@
 # Resume - Ryan Wallace (@ryancswallace)
 
-Typeset in TeX; rendered to PDF and HTML. Released as versioned GitHub release
-assets. Current assets deployed on GitHub Pages.
+My resume is:
+
+* Written in TeX;
+* Rendered to PDF, HTML, and plaintext;
+* Released as versioned GitHub release assets;
+* Deployed (current version only) to GitHub Pages.
 
 **Live:** `TODO`
 
