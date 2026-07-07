@@ -1,0 +1,69 @@
+{
+    "name": "Resume TeX",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "remoteUser": "node",
+    "runArgs": ["--init", "--security-opt", "seccomp=unconfined"],
+    "containerEnv": {
+        "SHELL": "/bin/bash"
+    },
+    "postCreateCommand": ".devcontainer/scripts/post-create.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "davidanson.vscode-markdownlint",
+                "github.vscode-github-actions",
+                "github.vscode-pull-request-github",
+                "james-yu.latex-workshop",
+                "mikestead.dotenv",
+                "ms-azuretools.vscode-containers",
+                "ms-vscode.makefile-tools",
+                "redhat.vscode-yaml",
+                "streetsidesoftware.code-spell-checker",
+                "tamasfe.even-better-toml",
+                "vivaxy.vscode-conventional-commits"
+            ],
+            "settings": {
+                "cSpell.mergeCSpellSettings": false,
+                "editor.formatOnSave": true,
+                "files.associations": {
+                    "*.tex": "latex"
+                },
+                "latex-workshop.latex.autoBuild.run": "onSave",
+                "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/build/pdf",
+                "latex-workshop.latex.recipes": [
+                    {
+                        "name": "latexmk",
+                        "tools": ["latexmk"]
+                    }
+                ],
+                "latex-workshop.latex.tools": [
+                    {
+                        "name": "latexmk",
+                        "command": "latexmk",
+                        "args": [
+                            "-pdf",
+                            "-interaction=nonstopmode",
+                            "-synctex=1",
+                            "-file-line-error",
+                            "-outdir=%OUTDIR%",
+                            "%DOC%"
+                        ]
+                    }
+                ],
+                "latex-workshop.view.pdf.viewer": "tab",
+                "markdownlint.config": {
+                    "default": true
+                },
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    },
+    "mounts": [
+        "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.local/share/devcontainer-bin,target=/home/vscode/.local/share/host-bin,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.codex-devcontainer,target=/home/vscode/.codex,type=bind,consistency=cached"
+    ]
+}

@@ -1,0 +1,162 @@
+name: Resume CI
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  id-token: write
+  pages: write
+
+concurrency:
+  group: resume-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PAGES_BASE_URL: https://ryancswallace.github.io/resume
+
+jobs:
+  build:
+    name: Build resume
+    runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ steps.metadata.outputs.release_tag }}
+      updated_at: ${{ steps.metadata.outputs.updated_at }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Compute run metadata
+        id: metadata
+        shell: bash
+        run: |
+          UPDATED_AT="$(date -u +%Y-%m-%dT%H-%M-%S)"
+          RELEASE_TAG="resume-${UPDATED_AT}"
+          {
+            printf 'UPDATED_AT=%s\n' "${UPDATED_AT}"
+            printf 'RELEASE_TAG=%s\n' "${RELEASE_TAG}"
+            printf 'GIT_SHA=%s\n' "${GITHUB_SHA}"
+          } >> "${GITHUB_ENV}"
+          {
+            printf 'updated_at=%s\n' "${UPDATED_AT}"
+            printf 'release_tag=%s\n' "${RELEASE_TAG}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install pre-check tools
+        shell: bash
+        run: npm install --global cspell markdownlint-cli2 prettier
+
+      - name: Run pre-checks
+        shell: bash
+        run: |
+          shellcheck scripts/*.sh
+          cspell .
+          markdownlint-cli2 "**/*.md"
+          prettier --check ".github/workflows/*.yml" "*.json" "*.md"
+
+      - name: Install build dependencies
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            biber \
+            chktex \
+            ghostscript \
+            jq \
+            latexmk \
+            make \
+            pandoc \
+            poppler-utils \
+            texlive-base \
+            texlive-bibtex-extra \
+            texlive-extra-utils \
+            texlive-fonts-recommended \
+            texlive-lang-english \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-latex-recommended \
+            texlive-luatex \
+            texlive-pictures \
+            texlive-plain-generic \
+            texlive-science \
+            texlive-xetex
+
+      - name: Build dist artifacts
+        shell: bash
+        run: scripts/build-resume.sh
+
+      - name: Run post-build checks
+        shell: bash
+        run: scripts/check-dist.sh
+
+      - name: Upload review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume-dist-${{ steps.metadata.outputs.release_tag }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload GitHub Pages artifact
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist/
+
+  deploy-pages:
+    name: Publish latest to GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v5
+
+  release:
+    name: Create archival release
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download built artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: resume-dist-${{ needs.build.outputs.release_tag }}
+          path: dist/
+
+      - name: Create immutable dated GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.build.outputs.release_tag }}
+          UPDATED_AT: ${{ needs.build.outputs.updated_at }}
+        run: |
+          cat > release-notes.md <<NOTES
+          Resume archival release generated at ${UPDATED_AT} UTC.
+
+          Latest public links:
+          - PDF: ${PAGES_BASE_URL}/resume.pdf
+          - HTML: ${PAGES_BASE_URL}/resume.html
+          - TeX: ${PAGES_BASE_URL}/resume.tex
+          NOTES
+
+          gh release create "${RELEASE_TAG}" dist/* \
+            --target "${GITHUB_SHA}" \
+            --title "${RELEASE_TAG}" \
+            --notes-file release-notes.md
