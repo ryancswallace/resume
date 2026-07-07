@@ -134,6 +134,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Download built artifacts
         uses: actions/download-artifact@v4
         with:
@@ -144,6 +147,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ needs.build.outputs.release_tag }}
           UPDATED_AT: ${{ needs.build.outputs.updated_at }}
         run: |
