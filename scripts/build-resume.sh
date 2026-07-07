@@ -126,28 +126,21 @@ cat > "${DIST_DIR}/index.html" <<HTML
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Resume - Ryan Wallace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
       :root {
-        color-scheme: light dark;
-        --bg: #f7f3ea;
-        --card: #fffaf0;
-        --ink: #24211d;
-        --muted: #6d665d;
-        --line: #d8cfc0;
-        --accent: #9b3d2e;
-        --accent-ink: #ffffff;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #181715;
-          --card: #22201d;
-          --ink: #f2eadf;
-          --muted: #b8aa99;
-          --line: #3a352f;
-          --accent: #d97b62;
-          --accent-ink: #181715;
-        }
+        color-scheme: dark;
+        --background: #212737;
+        --foreground: #eaedf3;
+        --accent: #ff6b01;
+        --muted: #343f60;
+        --border: #ab4b08;
+        --accent-ink: #212737;
+        --subtle: rgba(234, 237, 243, 0.72);
+        --glow: rgba(255, 107, 1, 0.18);
+        --shadow: rgba(33, 39, 55, 0.42);
       }
 
       * {
@@ -160,21 +153,21 @@ cat > "${DIST_DIR}/index.html" <<HTML
         display: grid;
         place-items: center;
         padding: 2rem;
-        background:
-          linear-gradient(135deg, rgba(155, 61, 46, 0.12), transparent 38%),
-          var(--bg);
-        color: var(--ink);
+        background: linear-gradient(135deg, var(--glow), transparent 38%),
+          var(--background);
+        color: var(--foreground);
         font-family:
-          ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+          "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
       }
 
       main {
         width: min(100%, 42rem);
         padding: clamp(2rem, 5vw, 3.5rem);
-        border: 1px solid var(--line);
+        border: 1px solid var(--border);
         border-radius: 8px;
-        background: var(--card);
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+        background: var(--muted);
+        box-shadow: 0 24px 60px var(--shadow);
       }
 
       h1 {
@@ -186,7 +179,7 @@ cat > "${DIST_DIR}/index.html" <<HTML
 
       p {
         margin: 1rem 0 0;
-        color: var(--muted);
+        color: var(--subtle);
         font-size: 1.05rem;
       }
 
@@ -205,9 +198,9 @@ cat > "${DIST_DIR}/index.html" <<HTML
         gap: 1rem;
         min-height: 3.25rem;
         padding: 0.85rem 1rem;
-        border: 1px solid var(--line);
+        border: 1px solid var(--border);
         border-radius: 8px;
-        color: var(--ink);
+        color: var(--foreground);
         text-decoration: none;
         transition:
           background-color 160ms ease,
@@ -218,7 +211,7 @@ cat > "${DIST_DIR}/index.html" <<HTML
 
       a::after {
         content: attr(data-format);
-        color: var(--muted);
+        color: var(--subtle);
         font-size: 0.8rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -240,13 +233,18 @@ cat > "${DIST_DIR}/index.html" <<HTML
   </head>
   <body>
     <main>
-      <h1>Resume - Ryan Wallace</h1>
-      <p>Available formats for the latest published resume.</p>
-      <ul>
-        <li><a href="resume.html" data-format="HTML">Read online</a></li>
+      <h1>Resume</h1>
+      <h2>Ryan Wallace (@ryancswallace)</h2>
+      <br>
+      <p>Formats:</p><ul>
         <li><a href="resume.pdf" data-format="PDF">Download PDF</a></li>
+        <li><a href="resume.html" data-format="HTML">Read online</a></li>
         <li><a href="resume.tex" data-format="TeX">View TeX source</a></li>
+      </ul>
+      <br>
+      <p>Metadata:</p><ul>
         <li><a href="metadata.json" data-format="JSON">Build metadata</a></li>
+        <li><a href="SHA256SUMS" data-format="Text">File checksums</a></li>
       </ul>
     </main>
   </body>
