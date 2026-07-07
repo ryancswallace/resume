@@ -45,6 +45,7 @@
         "poppler",
         "postcheck",
         "precheck",
+        "rgba",
         "ryancswallace",
         "seccomp",
         "shellcheck",

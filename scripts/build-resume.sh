@@ -114,7 +114,8 @@ cat > "${DIST_DIR}/metadata.json" <<JSON
   "release_tag": "${RELEASE_TAG}",
   "pdf_url": "${PAGES_BASE_URL}/resume.pdf",
   "html_url": "${PAGES_BASE_URL}/resume.html",
-  "tex_url": "${PAGES_BASE_URL}/resume.tex"
+  "tex_url": "${PAGES_BASE_URL}/resume.tex",
+  "metadata_url": "${PAGES_BASE_URL}/metadata.json"
 }
 JSON
 
@@ -124,15 +125,129 @@ cat > "${DIST_DIR}/index.html" <<HTML
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="refresh" content="0; url=resume.html">
-    <title>Resume</title>
+    <title>Resume - Ryan Wallace</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f7f3ea;
+        --card: #fffaf0;
+        --ink: #24211d;
+        --muted: #6d665d;
+        --line: #d8cfc0;
+        --accent: #9b3d2e;
+        --accent-ink: #ffffff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #181715;
+          --card: #22201d;
+          --ink: #f2eadf;
+          --muted: #b8aa99;
+          --line: #3a352f;
+          --accent: #d97b62;
+          --accent-ink: #181715;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        background:
+          linear-gradient(135deg, rgba(155, 61, 46, 0.12), transparent 38%),
+          var(--bg);
+        color: var(--ink);
+        font-family:
+          ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+      }
+
+      main {
+        width: min(100%, 42rem);
+        padding: clamp(2rem, 5vw, 3.5rem);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--card);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 7vw, 4rem);
+        line-height: 0.95;
+        font-weight: 700;
+      }
+
+      p {
+        margin: 1rem 0 0;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      ul {
+        display: grid;
+        gap: 0.75rem;
+        margin: 2rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        min-height: 3.25rem;
+        padding: 0.85rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        text-decoration: none;
+        transition:
+          background-color 160ms ease,
+          border-color 160ms ease,
+          color 160ms ease,
+          transform 160ms ease;
+      }
+
+      a::after {
+        content: attr(data-format);
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      a:focus,
+      a:hover {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: var(--accent-ink);
+        transform: translateY(-1px);
+      }
+
+      a:focus::after,
+      a:hover::after {
+        color: currentColor;
+      }
+    </style>
   </head>
   <body>
     <main>
-      <h1>Resume</h1>
-      <p><a href="resume.html">HTML</a></p>
-      <p><a href="resume.pdf">PDF</a></p>
-      <p><a href="resume.tex">TeX source</a></p>
+      <h1>Resume - Ryan Wallace</h1>
+      <p>Available formats for the latest published resume.</p>
+      <ul>
+        <li><a href="resume.html" data-format="HTML">Read online</a></li>
+        <li><a href="resume.pdf" data-format="PDF">Download PDF</a></li>
+        <li><a href="resume.tex" data-format="TeX">View TeX source</a></li>
+        <li><a href="metadata.json" data-format="JSON">Build metadata</a></li>
+      </ul>
     </main>
   </body>
 </html>
