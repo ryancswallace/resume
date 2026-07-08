@@ -2,17 +2,22 @@
 set -euo pipefail
 
 SRC_DIR="${SRC_DIR:-src}"
-ENTRYPOINT="${RESUME_TEX:-${SRC_DIR}/resume.tex}"
+ARTIFACT_BASENAME="${ARTIFACT_BASENAME:-resume_ryan-wallace}"
+ENTRYPOINT="${RESUME_TEX:-${SRC_DIR}/${ARTIFACT_BASENAME}.tex}"
 BUILD_DIR="${BUILD_DIR:-build}"
 DIST_DIR="${DIST_DIR:-dist}"
 PDF_BUILD_DIR="${BUILD_DIR}/pdf"
 HTML_BUILD_DIR="${BUILD_DIR}/html"
 PAGES_BASE_URL="${PAGES_BASE_URL:-https://ryancswallace.github.io/resume}"
 UPDATED_AT="${UPDATED_AT:-$(date -u +%Y-%m-%dT%H-%M-%S)}"
-RELEASE_TAG="${RELEASE_TAG:-resume-${UPDATED_AT}}"
+RELEASE_TAG="${RELEASE_TAG:-${ARTIFACT_BASENAME}-${UPDATED_AT}}"
 GIT_SHA="${GIT_SHA:-${GITHUB_SHA:-$(git rev-parse HEAD 2>/dev/null || printf 'unknown')}}"
 FAVICON_SOURCE="${FAVICON_SOURCE:-assets/rw_favicons/favicon.ico}"
 FAVICON_FILE="favicon.ico"
+ENTRYPOINT_BASENAME="$(basename "${ENTRYPOINT}" .tex)"
+PDF_FILE="${ARTIFACT_BASENAME}.pdf"
+HTML_FILE="${ARTIFACT_BASENAME}.html"
+TEX_FILE="${ARTIFACT_BASENAME}.tex"
 
 if [[ ! -f "${ENTRYPOINT}" ]]; then
     printf 'Resume entrypoint not found: %s\n' "${ENTRYPOINT}" >&2
@@ -38,7 +43,7 @@ latexmk \
     -outdir="${PDF_BUILD_DIR}" \
     "${ENTRYPOINT}"
 
-cp "${PDF_BUILD_DIR}/resume.pdf" "${DIST_DIR}/resume.pdf"
+cp "${PDF_BUILD_DIR}/${ENTRYPOINT_BASENAME}.pdf" "${DIST_DIR}/${PDF_FILE}"
 
 sanitize_tex() {
     awk '
@@ -52,26 +57,28 @@ sanitize_tex() {
 }
 
 if command -v latexpand >/dev/null 2>&1; then
-    latexpand --empty-comments "${ENTRYPOINT}" | sanitize_tex /dev/stdin > "${DIST_DIR}/resume.tex"
+    latexpand --empty-comments "${ENTRYPOINT}" | sanitize_tex /dev/stdin > "${DIST_DIR}/${TEX_FILE}"
 else
-    sanitize_tex "${ENTRYPOINT}" > "${DIST_DIR}/resume.tex"
+    sanitize_tex "${ENTRYPOINT}" > "${DIST_DIR}/${TEX_FILE}"
 fi
 
 inline_css() {
     local html_file="$1"
     local css_file="$2"
+    local css_name
     local tmp_file
 
     [[ -f "${css_file}" ]] || return 0
+    css_name="$(basename "${css_file}")"
     tmp_file="$(mktemp)"
-    awk -v css_file="${css_file}" '
+    awk -v css_file="${css_file}" -v css_name="${css_name}" '
         BEGIN {
             while ((getline line < css_file) > 0) {
                 css = css line "\n"
             }
             close(css_file)
         }
-        /<link[^>]*href=.resume[.]css.[^>]*>/ {
+        /<link/ && (index($0, "href=\047" css_name "\047") || index($0, "href=\"" css_name "\"")) {
             print "<style>"
             printf "%s", css
             print "</style>"
@@ -111,13 +118,13 @@ build_html_with_make4ht() {
         export TEXINPUTS="${PWD}/${SRC_DIR}//:${TEXINPUTS:-}"
         make4ht -u -f html5 -d html "${ENTRYPOINT}"
     )
-    if [[ ! -f "${tmp_work}/html/resume.html" ]]; then
+    if [[ ! -f "${tmp_work}/html/${ENTRYPOINT_BASENAME}.html" ]]; then
         rm -rf "${tmp_work}"
         return 1
     fi
-    inline_css "${tmp_work}/html/resume.html" "${tmp_work}/html/resume.css"
-    cp "${tmp_work}/html/resume.html" "${DIST_DIR}/resume.html"
-    find "${tmp_work}/html" -maxdepth 1 -type f ! -name 'resume.html' -exec cp {} "${DIST_DIR}/" \;
+    inline_css "${tmp_work}/html/${ENTRYPOINT_BASENAME}.html" "${tmp_work}/html/${ENTRYPOINT_BASENAME}.css"
+    cp "${tmp_work}/html/${ENTRYPOINT_BASENAME}.html" "${DIST_DIR}/${HTML_FILE}"
+    find "${tmp_work}/html" -maxdepth 1 -type f ! -name "${ENTRYPOINT_BASENAME}.html" -exec cp {} "${DIST_DIR}/" \;
     rm -rf "${tmp_work}"
 }
 
@@ -126,23 +133,23 @@ build_html_with_pandoc() {
     pandoc "${ENTRYPOINT}" \
         --standalone \
         --metadata title="Resume" \
-        --output "${DIST_DIR}/resume.html"
+        --output "${DIST_DIR}/${HTML_FILE}"
 }
 
 if ! build_html_with_make4ht; then
     build_html_with_pandoc
 fi
 
-add_favicon_link "${DIST_DIR}/resume.html"
+add_favicon_link "${DIST_DIR}/${HTML_FILE}"
 
 cat > "${DIST_DIR}/metadata.json" <<JSON
 {
   "updated_at": "${UPDATED_AT}",
   "git_sha": "${GIT_SHA}",
   "release_tag": "${RELEASE_TAG}",
-  "pdf_url": "${PAGES_BASE_URL}/resume.pdf",
-  "html_url": "${PAGES_BASE_URL}/resume.html",
-  "tex_url": "${PAGES_BASE_URL}/resume.tex",
+  "pdf_url": "${PAGES_BASE_URL}/${PDF_FILE}",
+  "html_url": "${PAGES_BASE_URL}/${HTML_FILE}",
+  "tex_url": "${PAGES_BASE_URL}/${TEX_FILE}",
   "metadata_url": "${PAGES_BASE_URL}/metadata.json"
 }
 JSON
@@ -266,9 +273,9 @@ cat > "${DIST_DIR}/index.html" <<HTML
       <h2>Ryan Wallace (@ryancswallace)</h2>
       <br>
       <p>Formats:</p><ul>
-        <li><a href="resume.pdf" data-format="PDF">Download PDF</a></li>
-        <li><a href="resume.html" data-format="HTML">Read online</a></li>
-        <li><a href="resume.tex" data-format="TeX">View TeX source</a></li>
+        <li><a href="${PDF_FILE}" data-format="PDF">Download PDF</a></li>
+        <li><a href="${HTML_FILE}" data-format="HTML">Read online</a></li>
+        <li><a href="${TEX_FILE}" data-format="TeX">View TeX source</a></li>
       </ul>
       <br>
       <p>Metadata:</p><ul>
@@ -282,7 +289,7 @@ HTML
 
 (
     cd "${DIST_DIR}"
-    sha256sum resume.pdf resume.html resume.tex metadata.json index.html favicon.ico > SHA256SUMS
+    sha256sum "${PDF_FILE}" "${HTML_FILE}" "${TEX_FILE}" metadata.json index.html favicon.ico > SHA256SUMS
 )
 
 printf 'Built resume artifacts in %s for %s\n' "${DIST_DIR}" "${RELEASE_TAG}"

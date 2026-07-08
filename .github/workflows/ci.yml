@@ -13,10 +13,11 @@ permissions:
   pages: write
 
 concurrency:
-  group: resume-${{ github.ref }}
+  group: resume_ryan-wallace-${{ github.ref }}
   cancel-in-progress: true
 
 env:
+  ARTIFACT_BASENAME: resume_ryan-wallace
   PAGES_BASE_URL: https://ryancswallace.github.io/resume
 
 jobs:
@@ -36,7 +37,7 @@ jobs:
         shell: bash
         run: |
           UPDATED_AT="$(date -u +%Y-%m-%dT%H-%M-%S)"
-          RELEASE_TAG="resume-${UPDATED_AT}"
+          RELEASE_TAG="${ARTIFACT_BASENAME}-${UPDATED_AT}"
           {
             printf 'UPDATED_AT=%s\n' "${UPDATED_AT}"
             printf 'RELEASE_TAG=%s\n' "${RELEASE_TAG}"
@@ -93,7 +94,7 @@ jobs:
 
       - name: Build dist artifacts
         shell: bash
-        run: scripts/build-resume.sh
+        run: scripts/build-resume_ryan-wallace.sh
 
       - name: Run post-build checks
         shell: bash
@@ -102,7 +103,7 @@ jobs:
       - name: Upload review artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: resume-dist-${{ steps.metadata.outputs.release_tag }}
+          name: dist-${{ steps.metadata.outputs.release_tag }}
           path: dist/
           if-no-files-found: error
           retention-days: 30
@@ -140,7 +141,7 @@ jobs:
       - name: Download built artifacts
         uses: actions/download-artifact@v4
         with:
-          name: resume-dist-${{ needs.build.outputs.release_tag }}
+          name: dist-${{ needs.build.outputs.release_tag }}
           path: dist/
 
       - name: Create immutable dated GitHub Release
@@ -155,9 +156,9 @@ jobs:
           Resume archival release generated at ${UPDATED_AT} UTC.
 
           Latest public links:
-          - PDF: ${PAGES_BASE_URL}/resume.pdf
-          - HTML: ${PAGES_BASE_URL}/resume.html
-          - TeX: ${PAGES_BASE_URL}/resume.tex
+          - PDF: ${PAGES_BASE_URL}/${ARTIFACT_BASENAME}.pdf
+          - HTML: ${PAGES_BASE_URL}/${ARTIFACT_BASENAME}.html
+          - TeX: ${PAGES_BASE_URL}/${ARTIFACT_BASENAME}.tex
           NOTES
 
           gh release create "${RELEASE_TAG}" dist/* \

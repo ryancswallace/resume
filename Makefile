@@ -3,14 +3,15 @@ SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
 
-RESUME_TEX ?= src/resume.tex
+ARTIFACT_BASENAME ?= resume_ryan-wallace
+RESUME_TEX ?= src/$(ARTIFACT_BASENAME).tex
 SRC_DIR ?= src
 BUILD_DIR ?= build
 DIST_DIR ?= dist
 SITE_DIR ?= site
 PAGES_BASE_URL ?= https://ryancswallace.github.io/resume
 UPDATED_AT ?= $(shell date -u +%Y-%m-%dT%H-%M-%S)
-RELEASE_TAG ?= resume-$(UPDATED_AT)
+RELEASE_TAG ?= $(ARTIFACT_BASENAME)-$(UPDATED_AT)
 GIT_SHA ?= $(shell git rev-parse --verify HEAD 2>/dev/null || printf unknown)
 
 DEV_IMAGE ?= resume-dev
@@ -25,8 +26,9 @@ help: ## Show this help message.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make <target>\n\nTargets:\n"} /^[a-zA-Z0-9_.-]+:.*##/ {printf "  %-24s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .PHONY: build
-build: ## Build all dist/resume.* artifacts.
+build: ## Build all dist/resume_ryan-wallace.* artifacts.
 	SRC_DIR="$(SRC_DIR)" \
+	ARTIFACT_BASENAME="$(ARTIFACT_BASENAME)" \
 	RESUME_TEX="$(RESUME_TEX)" \
 	BUILD_DIR="$(BUILD_DIR)" \
 	DIST_DIR="$(DIST_DIR)" \
@@ -34,7 +36,7 @@ build: ## Build all dist/resume.* artifacts.
 	UPDATED_AT="$(UPDATED_AT)" \
 	RELEASE_TAG="$(RELEASE_TAG)" \
 	GIT_SHA="$(GIT_SHA)" \
-	scripts/build-resume.sh
+	scripts/build-resume_ryan-wallace.sh
 
 .PHONY: pdf
 pdf: ## Compile only the PDF into the build directory.
@@ -86,11 +88,11 @@ format: ## Format supported text/config files with Prettier.
 
 .PHONY: check-dist
 check-dist: ## Validate generated dist artifacts.
-	DIST_DIR="$(DIST_DIR)" scripts/check-dist.sh
+	DIST_DIR="$(DIST_DIR)" ARTIFACT_BASENAME="$(ARTIFACT_BASENAME)" scripts/check-dist.sh
 
 .PHONY: checksums
 checksums: ## Recompute SHA256SUMS for generated dist artifacts.
-	cd "$(DIST_DIR)" && sha256sum resume.pdf resume.html resume.tex metadata.json index.html > SHA256SUMS
+	cd "$(DIST_DIR)" && sha256sum "$(ARTIFACT_BASENAME).pdf" "$(ARTIFACT_BASENAME).html" "$(ARTIFACT_BASENAME).tex" metadata.json index.html favicon.ico > SHA256SUMS
 
 .PHONY: metadata
 metadata: ## Print generated dist metadata.
@@ -121,6 +123,7 @@ pages-preview: build check-dist ## Build the GitHub Pages payload into the site 
 
 .PHONY: print-vars
 print-vars: ## Print Makefile configuration values.
+	@printf 'ARTIFACT_BASENAME=%s\n' "$(ARTIFACT_BASENAME)"
 	@printf 'RESUME_TEX=%s\n' "$(RESUME_TEX)"
 	@printf 'SRC_DIR=%s\n' "$(SRC_DIR)"
 	@printf 'BUILD_DIR=%s\n' "$(BUILD_DIR)"
