@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-mkdir -p build/pdf build/html dist site
+mkdir -p build/pdf dist site
 
 tools=(
     biber
@@ -10,8 +10,6 @@ tools=(
     gh
     git
     latexmk
-    latexml
-    latexmlpost
     make
     markdownlint-cli2
     node
@@ -22,7 +20,6 @@ tools=(
     python3
     rg
     shellcheck
-    tidy
     xelatex
 )
 

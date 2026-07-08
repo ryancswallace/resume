@@ -21,7 +21,6 @@ RUN apt-get update \
         imagemagick \
         jq \
         latexmk \
-        latexml \
         less \
         libfontconfig1 \
         make \
@@ -45,7 +44,6 @@ RUN apt-get update \
         texlive-plain-generic \
         texlive-science \
         texlive-xetex \
-        tidy \
         unzip \
         vim \
         wget \

@@ -5,13 +5,11 @@ DIST_DIR="${DIST_DIR:-dist}"
 ARTIFACT_BASENAME="${ARTIFACT_BASENAME:-resume_ryan-wallace}"
 PAGES_BASE_URL="${PAGES_BASE_URL:-https://ryancswallace.github.io/resume}"
 PDF_FILE="${ARTIFACT_BASENAME}.pdf"
-HTML_FILE="${ARTIFACT_BASENAME}.html"
 RTF_FILE="${ARTIFACT_BASENAME}.rtf"
 MD_FILE="${ARTIFACT_BASENAME}.md"
 TEX_FILE="${ARTIFACT_BASENAME}.tex"
 required_files=(
     "${PDF_FILE}"
-    "${HTML_FILE}"
     "${RTF_FILE}"
     "${MD_FILE}"
     "${TEX_FILE}"
@@ -34,7 +32,6 @@ jq -e '
     and .git_sha
     and .release_tag
     and .pdf_url
-    and .html_url
     and .rtf_url
     and .markdown_url
     and .tex_url
@@ -43,14 +40,12 @@ jq -e '
 
 jq -er '.release_tag' "${DIST_DIR}/metadata.json" | grep -Eq "^${ARTIFACT_BASENAME}-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}$"
 jq -er '.pdf_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${PDF_FILE}" >/dev/null
-jq -er '.html_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${HTML_FILE}" >/dev/null
 jq -er '.rtf_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${RTF_FILE}" >/dev/null
 jq -er '.markdown_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${MD_FILE}" >/dev/null
 jq -er '.tex_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${TEX_FILE}" >/dev/null
 jq -er '.metadata_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/metadata.json" >/dev/null
 
 pdfinfo "${DIST_DIR}/${PDF_FILE}" >/dev/null
-grep -qi '<html' "${DIST_DIR}/${HTML_FILE}"
 grep -q '{\\rtf' "${DIST_DIR}/${RTF_FILE}"
 grep -q '^# Ryan Wallace$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^Boston, MA | \[ryan@ryancswallace.dev\](mailto:ryan@ryancswallace.dev) | 617-852-9239$' "${DIST_DIR}/${MD_FILE}"
@@ -101,7 +96,6 @@ if grep -Eq '^ +' "${DIST_DIR}/${RTF_FILE}"; then
 fi
 grep -q '\\documentclass' "${DIST_DIR}/${TEX_FILE}"
 grep -q '<title>Resume - Ryan Wallace</title>' "${DIST_DIR}/index.html"
-grep -Fqi "${HTML_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${PDF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${RTF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${MD_FILE}" "${DIST_DIR}/index.html"
@@ -109,10 +103,8 @@ grep -Fqi "${TEX_FILE}" "${DIST_DIR}/index.html"
 grep -qi 'metadata.json' "${DIST_DIR}/index.html"
 grep -qi 'rel="icon"' "${DIST_DIR}/index.html"
 grep -qi 'href="favicon.ico"' "${DIST_DIR}/index.html"
-grep -qi 'rel="icon"' "${DIST_DIR}/${HTML_FILE}"
-grep -qi 'href="favicon.ico"' "${DIST_DIR}/${HTML_FILE}"
 if grep -Eiq '<meta[^>]+http-equiv=.refresh' "${DIST_DIR}/index.html"; then
-    printf 'Index page must not redirect to the HTML artifact.\n' >&2
+    printf 'Index page must not redirect.\n' >&2
     exit 9
 fi
 

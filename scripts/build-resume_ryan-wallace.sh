@@ -7,7 +7,6 @@ ENTRYPOINT="${RESUME_TEX:-${SRC_DIR}/${ARTIFACT_BASENAME}.tex}"
 BUILD_DIR="${BUILD_DIR:-build}"
 DIST_DIR="${DIST_DIR:-dist}"
 PDF_BUILD_DIR="${BUILD_DIR}/pdf"
-HTML_BUILD_DIR="${BUILD_DIR}/html"
 PAGES_BASE_URL="${PAGES_BASE_URL:-https://ryancswallace.github.io/resume}"
 UPDATED_AT="${UPDATED_AT:-$(date -u +%Y-%m-%dT%H-%M-%S)}"
 RELEASE_TAG="${RELEASE_TAG:-${ARTIFACT_BASENAME}-${UPDATED_AT}}"
@@ -16,7 +15,6 @@ FAVICON_SOURCE="${FAVICON_SOURCE:-assets/rw_favicons/favicon.ico}"
 FAVICON_FILE="favicon.ico"
 ENTRYPOINT_BASENAME="$(basename "${ENTRYPOINT}" .tex)"
 PDF_FILE="${ARTIFACT_BASENAME}.pdf"
-HTML_FILE="${ARTIFACT_BASENAME}.html"
 RTF_FILE="${ARTIFACT_BASENAME}.rtf"
 MD_FILE="${ARTIFACT_BASENAME}.md"
 TEX_FILE="${ARTIFACT_BASENAME}.tex"
@@ -33,8 +31,8 @@ fi
 
 export TEXINPUTS="${SRC_DIR}//:${TEXINPUTS:-}"
 
-rm -rf "${DIST_DIR}" "${PDF_BUILD_DIR}" "${HTML_BUILD_DIR}"
-mkdir -p "${DIST_DIR}" "${PDF_BUILD_DIR}" "${HTML_BUILD_DIR}"
+rm -rf "${DIST_DIR}" "${PDF_BUILD_DIR}"
+mkdir -p "${DIST_DIR}" "${PDF_BUILD_DIR}"
 cp "${FAVICON_SOURCE}" "${DIST_DIR}/${FAVICON_FILE}"
 
 latexmk \
@@ -63,51 +61,6 @@ if command -v latexpand >/dev/null 2>&1; then
 else
     sanitize_tex "${ENTRYPOINT}" > "${DIST_DIR}/${TEX_FILE}"
 fi
-
-inline_css() {
-    local html_file="$1"
-    local css_file="$2"
-    local css_name
-    local tmp_file
-
-    [[ -f "${css_file}" ]] || return 0
-    css_name="$(basename "${css_file}")"
-    tmp_file="$(mktemp)"
-    awk -v css_file="${css_file}" -v css_name="${css_name}" '
-        BEGIN {
-            while ((getline line < css_file) > 0) {
-                css = css line "\n"
-            }
-            close(css_file)
-        }
-        /<link/ && (index($0, "href=\047" css_name "\047") || index($0, "href=\"" css_name "\"")) {
-            print "<style>"
-            printf "%s", css
-            print "</style>"
-            next
-        }
-        { print }
-    ' "${html_file}" > "${tmp_file}"
-    mv "${tmp_file}" "${html_file}"
-}
-
-add_favicon_link() {
-    local html_file="$1"
-    local tmp_file
-
-    [[ -f "${html_file}" ]] || return 0
-    tmp_file="$(mktemp)"
-    awk -v favicon="${FAVICON_FILE}" '
-        {
-            if (!inserted && tolower($0) ~ /<\/head>/) {
-                sub(/<\/head>/, "    <link rel=\"icon\" href=\"" favicon "\" sizes=\"any\">\n&")
-                inserted = 1
-            }
-            print
-        }
-    ' "${html_file}" > "${tmp_file}"
-    mv "${tmp_file}" "${html_file}"
-}
 
 strip_leading_spaces() {
     local file="$1"
@@ -145,43 +98,8 @@ normalize_markdown() {
     mv "${tmp_file}" "${file}"
 }
 
-build_html_with_make4ht() {
-    local tmp_work
-
-    command -v make4ht >/dev/null 2>&1 || return 1
-    tmp_work="$(mktemp -d)"
-    cp -R "${SRC_DIR}" "${tmp_work}/${SRC_DIR}"
-    (
-        cd "${tmp_work}"
-        export TEXINPUTS="${PWD}/${SRC_DIR}//:${TEXINPUTS:-}"
-        make4ht -u -f html5 -d html "${ENTRYPOINT}"
-    )
-    if [[ ! -f "${tmp_work}/html/${ENTRYPOINT_BASENAME}.html" ]]; then
-        rm -rf "${tmp_work}"
-        return 1
-    fi
-    inline_css "${tmp_work}/html/${ENTRYPOINT_BASENAME}.html" "${tmp_work}/html/${ENTRYPOINT_BASENAME}.css"
-    cp "${tmp_work}/html/${ENTRYPOINT_BASENAME}.html" "${DIST_DIR}/${HTML_FILE}"
-    find "${tmp_work}/html" -maxdepth 1 -type f ! -name "${ENTRYPOINT_BASENAME}.html" -exec cp {} "${DIST_DIR}/" \;
-    rm -rf "${tmp_work}"
-}
-
-build_html_with_pandoc() {
-    command -v pandoc >/dev/null 2>&1 || return 1
-    pandoc "${ENTRYPOINT}" \
-        --standalone \
-        --metadata title="Resume" \
-        --output "${DIST_DIR}/${HTML_FILE}"
-}
-
-if ! build_html_with_make4ht; then
-    build_html_with_pandoc
-fi
-
-add_favicon_link "${DIST_DIR}/${HTML_FILE}"
-
 command -v pandoc >/dev/null 2>&1 || {
-    printf 'pandoc is required to build RTF output.\n' >&2
+    printf 'pandoc is required to build RTF and Markdown output.\n' >&2
     exit 1
 }
 
@@ -204,7 +122,6 @@ cat > "${DIST_DIR}/metadata.json" <<JSON
   "git_sha": "${GIT_SHA}",
   "release_tag": "${RELEASE_TAG}",
   "pdf_url": "${PAGES_BASE_URL}/${PDF_FILE}",
-  "html_url": "${PAGES_BASE_URL}/${HTML_FILE}",
   "rtf_url": "${PAGES_BASE_URL}/${RTF_FILE}",
   "markdown_url": "${PAGES_BASE_URL}/${MD_FILE}",
   "tex_url": "${PAGES_BASE_URL}/${TEX_FILE}",
@@ -333,9 +250,8 @@ cat > "${DIST_DIR}/index.html" <<HTML
       <p>Formats:</p><ul>
         <li><a href="${PDF_FILE}" target="_blank" download data-format="PDF">Download PDF</a></li>
         <li><a href="${RTF_FILE}" target="_blank" download data-format="RTF">Download RTF</a></li>
-        <li><a href="${HTML_FILE}" target="_blank" data-format="HTML">Read online</a></li>
-        <li><a href="${MD_FILE}" target="_blank" data-format="Markdown">AI-readable Markdown</a></li>
         <li><a href="${TEX_FILE}" target="_blank" download data-format="TeX">Download TeX source</a></li>
+        <li><a href="${MD_FILE}" target="_blank" data-format="Markdown">View AI-readable Markdown</a></li>
       </ul>
       <br>
       <p>Metadata:</p><ul>
@@ -349,7 +265,7 @@ HTML
 
 (
     cd "${DIST_DIR}"
-    sha256sum "${PDF_FILE}" "${HTML_FILE}" "${RTF_FILE}" "${MD_FILE}" "${TEX_FILE}" metadata.json index.html favicon.ico > SHA256SUMS
+    sha256sum "${PDF_FILE}" "${RTF_FILE}" "${MD_FILE}" "${TEX_FILE}" metadata.json index.html favicon.ico > SHA256SUMS
 )
 
 printf 'Built resume artifacts in %s for %s\n' "${DIST_DIR}" "${RELEASE_TAG}"
