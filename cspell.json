@@ -29,6 +29,7 @@
         "chktex",
         "Consolas",
         "cspell",
+        "davidanson",
         "documentclass",
         "favicon",
         "favicons",
@@ -43,6 +44,7 @@
         "markdownlint",
         "Matplotlib",
         "Menlo",
+        "mikestead",
         "nonstopmode",
         "pandoc",
         "pdfinfo",
@@ -56,9 +58,12 @@
         "seccomp",
         "shellcheck",
         "stylesheet",
+        "synctex",
+        "tamasfe",
         "TEXINPUTS",
         "texlive",
         "tolower",
+        "vivaxy",
         "xetex"
     ]
 }

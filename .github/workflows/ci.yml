@@ -158,6 +158,7 @@ jobs:
           Latest public links:
           - PDF: ${PAGES_BASE_URL}/${ARTIFACT_BASENAME}.pdf
           - HTML: ${PAGES_BASE_URL}/${ARTIFACT_BASENAME}.html
+          - RTF: ${PAGES_BASE_URL}/${ARTIFACT_BASENAME}.rtf
           - TeX: ${PAGES_BASE_URL}/${ARTIFACT_BASENAME}.tex
           NOTES
 

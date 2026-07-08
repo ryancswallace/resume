@@ -17,6 +17,7 @@ FAVICON_FILE="favicon.ico"
 ENTRYPOINT_BASENAME="$(basename "${ENTRYPOINT}" .tex)"
 PDF_FILE="${ARTIFACT_BASENAME}.pdf"
 HTML_FILE="${ARTIFACT_BASENAME}.html"
+RTF_FILE="${ARTIFACT_BASENAME}.rtf"
 TEX_FILE="${ARTIFACT_BASENAME}.tex"
 
 if [[ ! -f "${ENTRYPOINT}" ]]; then
@@ -142,6 +143,16 @@ fi
 
 add_favicon_link "${DIST_DIR}/${HTML_FILE}"
 
+command -v pandoc >/dev/null 2>&1 || {
+    printf 'pandoc is required to build RTF output.\n' >&2
+    exit 1
+}
+
+pandoc "${DIST_DIR}/${TEX_FILE}" \
+    --standalone \
+    --metadata title="Resume" \
+    --output "${DIST_DIR}/${RTF_FILE}"
+
 cat > "${DIST_DIR}/metadata.json" <<JSON
 {
   "updated_at": "${UPDATED_AT}",
@@ -149,6 +160,7 @@ cat > "${DIST_DIR}/metadata.json" <<JSON
   "release_tag": "${RELEASE_TAG}",
   "pdf_url": "${PAGES_BASE_URL}/${PDF_FILE}",
   "html_url": "${PAGES_BASE_URL}/${HTML_FILE}",
+  "rtf_url": "${PAGES_BASE_URL}/${RTF_FILE}",
   "tex_url": "${PAGES_BASE_URL}/${TEX_FILE}",
   "metadata_url": "${PAGES_BASE_URL}/metadata.json"
 }
@@ -275,6 +287,7 @@ cat > "${DIST_DIR}/index.html" <<HTML
       <p>Formats:</p><ul>
         <li><a href="${PDF_FILE}" data-format="PDF">Download PDF</a></li>
         <li><a href="${HTML_FILE}" data-format="HTML">Read online</a></li>
+        <li><a href="${RTF_FILE}" data-format="RTF">Download RTF</a></li>
         <li><a href="${TEX_FILE}" data-format="TeX">View TeX source</a></li>
       </ul>
       <br>
@@ -289,7 +302,7 @@ HTML
 
 (
     cd "${DIST_DIR}"
-    sha256sum "${PDF_FILE}" "${HTML_FILE}" "${TEX_FILE}" metadata.json index.html favicon.ico > SHA256SUMS
+    sha256sum "${PDF_FILE}" "${HTML_FILE}" "${RTF_FILE}" "${TEX_FILE}" metadata.json index.html favicon.ico > SHA256SUMS
 )
 
 printf 'Built resume artifacts in %s for %s\n' "${DIST_DIR}" "${RELEASE_TAG}"
