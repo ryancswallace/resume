@@ -43,6 +43,7 @@ done
 printf 'DEBUG: Validated dist artifacts in %s...\n' "${DIST_DIR}"
 
 
+printf 'DEBUG: 0...\n'
 jq -e '
     .updated_at
     and .git_sha
@@ -55,6 +56,7 @@ jq -e '
     and .metadata_url
 ' "${DIST_DIR}/metadata.json" >/dev/null
 
+printf 'DEBUG: 1...\n'
 jq -er '.release_tag' "${DIST_DIR}/metadata.json" | grep -Eq "^${ARTIFACT_BASENAME}-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}$"
 jq -er '.pdf_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${PDF_FILE}" >/dev/null
 jq -er '.html_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${HTML_FILE}" >/dev/null
@@ -63,6 +65,7 @@ jq -er '.markdown_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}
 jq -er '.tex_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${TEX_FILE}" >/dev/null
 jq -er '.metadata_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/metadata.json" >/dev/null
 
+printf 'DEBUG: 2...\n'
 pdfinfo "${DIST_DIR}/${PDF_FILE}" >/dev/null
 grep -qi '<html' "${DIST_DIR}/${HTML_FILE}"
 grep -q '{\\rtf' "${DIST_DIR}/${RTF_FILE}"
@@ -120,6 +123,7 @@ if grep -Eiq '<meta[^>]+http-equiv=.refresh' "${DIST_DIR}/index.html"; then
     exit 8
 fi
 
+printf 'DEBUG: 3...\n'
 if [[ -f "${DIST_DIR}/SHA256SUMS" ]]; then
     (cd "${DIST_DIR}" && sha256sum --check SHA256SUMS)
 fi
