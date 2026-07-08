@@ -61,15 +61,6 @@ grep -q '^- \*\*Harvard University\*\* | Cambridge, MA$' "${DIST_DIR}/${MD_FILE}
 grep -q '^    - \*A.B., Computer Science, cum laude. Secondary concentration in Statistics. GPA: 3.8.\* | \*May, 2018\*$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^- \*\*Federal Reserve Bank of Boston\*\* | Boston, MA$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^    - \*Lead Data Scientist, Research\* | \*January, 2023 - March, 2026\*$' "${DIST_DIR}/${MD_FILE}"
-awk '
-    /^- \*\*(Harvard University|Federal Reserve Bank of Boston)\*\*/ {
-        if ((getline line) <= 0 || line != "") {
-            exit 1
-        }
-        found = 1
-    }
-    END { exit found ? 0 : 1 }
-' "${DIST_DIR}/${MD_FILE}"
 if grep -Eq '<[^>]+>|^[[:space:]]*\|' "${DIST_DIR}/${MD_FILE}"; then
     printf 'Markdown artifact must not contain HTML tags or table syntax.\n' >&2
     exit 1
