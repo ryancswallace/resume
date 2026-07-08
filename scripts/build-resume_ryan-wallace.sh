@@ -164,8 +164,7 @@ cat > "${DIST_DIR}/index.html" <<HTML
         display: grid;
         place-items: center;
         padding: 2rem;
-        background: linear-gradient(135deg, var(--glow), transparent 38%),
-          var(--background);
+        background: var(--background);
         color: var(--foreground);
         font-family:
           "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
