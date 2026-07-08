@@ -92,7 +92,7 @@ check-dist: ## Validate generated dist artifacts.
 
 .PHONY: checksums
 checksums: ## Recompute SHA256SUMS for generated dist artifacts.
-	cd "$(DIST_DIR)" && sha256sum "$(ARTIFACT_BASENAME).pdf" "$(ARTIFACT_BASENAME).html" "$(ARTIFACT_BASENAME).rtf" "$(ARTIFACT_BASENAME).tex" metadata.json index.html favicon.ico > SHA256SUMS
+	cd "$(DIST_DIR)" && sha256sum "$(ARTIFACT_BASENAME).pdf" "$(ARTIFACT_BASENAME).html" "$(ARTIFACT_BASENAME).rtf" "$(ARTIFACT_BASENAME).md" "$(ARTIFACT_BASENAME).tex" metadata.json index.html favicon.ico > SHA256SUMS
 
 .PHONY: metadata
 metadata: ## Print generated dist metadata.
