@@ -331,16 +331,16 @@ cat > "${DIST_DIR}/index.html" <<HTML
       <h2>Ryan Wallace (@ryancswallace)</h2>
       <br>
       <p>Formats:</p><ul>
-        <li><a href="${PDF_FILE}" data-format="PDF">Download PDF</a></li>
-        <li><a href="${HTML_FILE}" data-format="HTML">Read online</a></li>
-        <li><a href="${RTF_FILE}" data-format="RTF">Download RTF</a></li>
-        <li><a href="${MD_FILE}" data-format="Markdown">AI-readable Markdown</a></li>
-        <li><a href="${TEX_FILE}" data-format="TeX">View TeX source</a></li>
+        <li><a href="${PDF_FILE}" target="_blank" download data-format="PDF">Download PDF</a></li>
+        <li><a href="${RTF_FILE}" target="_blank" download data-format="RTF">Download RTF</a></li>
+        <li><a href="${HTML_FILE}" target="_blank" data-format="HTML">Read online</a></li>
+        <li><a href="${MD_FILE}" target="_blank" data-format="Markdown">AI-readable Markdown</a></li>
+        <li><a href="${TEX_FILE}" target="_blank" download data-format="TeX">Download TeX source</a></li>
       </ul>
       <br>
       <p>Metadata:</p><ul>
-        <li><a href="metadata.json" data-format="JSON">Build metadata</a></li>
-        <li><a href="SHA256SUMS" data-format="Text">File checksums</a></li>
+        <li><a href="metadata.json" target="_blank" data-format="JSON">Build metadata</a></li>
+        <li><a href="SHA256SUMS" target="_blank" data-format="Text">File checksums</a></li>
       </ul>
     </main>
   </body>
