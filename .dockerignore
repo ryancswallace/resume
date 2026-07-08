@@ -42,8 +42,9 @@ site/
 .vscode/
 Thumbs.db
 
-# Notes
+# Notes / In-Progress
 TODO.md
+work/
 
 # Astro reference files
 reference/
