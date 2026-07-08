@@ -50,29 +50,16 @@ jq -er '.tex_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${TE
 jq -er '.metadata_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/metadata.json" >/dev/null
 
 pdfinfo "${DIST_DIR}/${PDF_FILE}" >/dev/null
-printf 'DEBUG: 00...\n'
 grep -qi '<html' "${DIST_DIR}/${HTML_FILE}"
-printf 'DEBUG: 10...\n'
 grep -q '{\\rtf' "${DIST_DIR}/${RTF_FILE}"
-printf 'DEBUG: 20...\n'
 grep -q '^# Ryan Wallace$' "${DIST_DIR}/${MD_FILE}"
-printf 'DEBUG: 30...\n'
 grep -q '^Boston, MA | \[ryan@ryancswallace.dev\](mailto:ryan@ryancswallace.dev) | 617-852-9239$' "${DIST_DIR}/${MD_FILE}"
-printf 'DEBUG: 40...\n'
 grep -q '^\[github.com/ryancswallace\](https://github.com/ryancswallace) | \[ryancswallace.dev\](https://ryancswallace.dev) | \[linkedin.com/in/ryancswallace\](https://linkedin.com/in/ryancswallace)$' "${DIST_DIR}/${MD_FILE}"
-printf 'DEBUG: 50...\n'
 grep -q '^## Education$' "${DIST_DIR}/${MD_FILE}"
-printf 'DEBUG: 60...\n'
 grep -q '^## Experience$' "${DIST_DIR}/${MD_FILE}"
-printf 'DEBUG: 70...\n'
 grep -q '^## Skills$' "${DIST_DIR}/${MD_FILE}"
-printf 'DEBUG: 80...\n'
 grep -q '^- \*\*Harvard University\*\* | Cambridge, MA$' "${DIST_DIR}/${MD_FILE}"
-printf 'DEBUG: 90...\n'
-grep -q '^    - \*A.B., Computer Science, cum laude. Secondary concentration in Statistics. GPA: 3.8.\* | \*May, 2018\*$' "${DIST_DIR}/${MD_FILE}"
-printf 'DEBUG: 100...\n'
 grep -q '^- \*\*Federal Reserve Bank of Boston\*\* | Boston, MA$' "${DIST_DIR}/${MD_FILE}"
-printf 'DEBUG: 110...\n'
 if grep -Eq '<[^>]+>|^[[:space:]]*\|' "${DIST_DIR}/${MD_FILE}"; then
     printf 'Markdown artifact must not contain HTML tags or table syntax.\n' >&2
     exit 2
@@ -98,11 +85,8 @@ if grep -Fq '\fs36 Resume\par' "${DIST_DIR}/${RTF_FILE}"; then
     exit 5
 fi
 grep -F '\qc \f0 \b \fs36 Ryan Wallace\par' "${DIST_DIR}/${RTF_FILE}" >/dev/null
-printf 'DEBUG: 120...\n'
 grep -F '\qc \f0 \b0 \fs24 Boston, MA | ' "${DIST_DIR}/${RTF_FILE}" >/dev/null
-printf 'DEBUG: 130...\n'
 grep -F 'github.com/ryancswallace}}} | ' "${DIST_DIR}/${RTF_FILE}" >/dev/null
-printf 'DEBUG: 140...\n'
 if grep -q '\\trowd' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not contain visible table structures.\n' >&2
     exit 6
@@ -116,24 +100,17 @@ if grep -Eq '^ +' "${DIST_DIR}/${RTF_FILE}"; then
     exit 8
 fi
 grep -q '\\documentclass' "${DIST_DIR}/${TEX_FILE}"
-printf 'DEBUG: 150...\n'
 grep -q '<title>Resume - Ryan Wallace</title>' "${DIST_DIR}/index.html"
-printf 'DEBUG: 160...\n'
 grep -Fqi "${HTML_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${PDF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${RTF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${MD_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${TEX_FILE}" "${DIST_DIR}/index.html"
 grep -qi 'metadata.json' "${DIST_DIR}/index.html"
-printf 'DEBUG: 170...\n'
 grep -qi 'rel="icon"' "${DIST_DIR}/index.html"
-printf 'DEBUG: 180...\n'
 grep -qi 'href="favicon.ico"' "${DIST_DIR}/index.html"
-printf 'DEBUG: 190...\n'
 grep -qi 'rel="icon"' "${DIST_DIR}/${HTML_FILE}"
-printf 'DEBUG: 200...\n'
 grep -qi 'href="favicon.ico"' "${DIST_DIR}/${HTML_FILE}"
-printf 'DEBUG: 210...\n'
 if grep -Eiq '<meta[^>]+http-equiv=.refresh' "${DIST_DIR}/index.html"; then
     printf 'Index page must not redirect to the HTML artifact.\n' >&2
     exit 9
