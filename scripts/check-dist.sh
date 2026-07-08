@@ -63,30 +63,30 @@ grep -q '^- \*\*Federal Reserve Bank of Boston\*\* | Boston, MA$' "${DIST_DIR}/$
 grep -q '^    - \*Lead Data Scientist, Research\* | \*January, 2023 - March, 2026\*$' "${DIST_DIR}/${MD_FILE}"
 if grep -Eq '<[^>]+>|^[[:space:]]*\|' "${DIST_DIR}/${MD_FILE}"; then
     printf 'Markdown artifact must not contain HTML tags or table syntax.\n' >&2
-    exit 1
+    exit 2
 fi
 if grep -Eq '^[[:space:]]*-[[:space:]]{3}' "${DIST_DIR}/${MD_FILE}"; then
     printf 'Markdown artifact must use one space after bullet markers.\n' >&2
-    exit 1
+    exit 3
 fi
 if grep -Fq '\fs36 Resume\par' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not render a generic Resume title.\n' >&2
-    exit 1
+    exit 4
 fi
 grep -F '\qc \f0 \b \fs36 Ryan Wallace\par' "${DIST_DIR}/${RTF_FILE}" >/dev/null
 grep -F '\qc \f0 \b0 \fs24 Boston, MA | ' "${DIST_DIR}/${RTF_FILE}" >/dev/null
 grep -F 'github.com/ryancswallace}}} | ' "${DIST_DIR}/${RTF_FILE}" >/dev/null
 if grep -q '\\trowd' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not contain visible table structures.\n' >&2
-    exit 1
+    exit 5
 fi
 if grep -q '\\tab' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not contain tab controls after list markers.\n' >&2
-    exit 1
+    exit 6
 fi
 if grep -Eq '^ +' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not contain lines with leading spaces.\n' >&2
-    exit 1
+    exit 7
 fi
 grep -q '\\documentclass' "${DIST_DIR}/${TEX_FILE}"
 grep -q '<title>Resume - Ryan Wallace</title>' "${DIST_DIR}/index.html"
@@ -102,7 +102,7 @@ grep -qi 'rel="icon"' "${DIST_DIR}/${HTML_FILE}"
 grep -qi 'href="favicon.ico"' "${DIST_DIR}/${HTML_FILE}"
 if grep -Eiq '<meta[^>]+http-equiv=.refresh' "${DIST_DIR}/index.html"; then
     printf 'Index page must not redirect to the HTML artifact.\n' >&2
-    exit 1
+    exit 8
 fi
 
 if [[ -f "${DIST_DIR}/SHA256SUMS" ]]; then
