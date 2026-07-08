@@ -30,6 +30,8 @@
         "Consolas",
         "cspell",
         "documentclass",
+        "favicon",
+        "favicons",
         "getline",
         "ghostscript",
         "Gitlytics",
@@ -56,6 +58,7 @@
         "stylesheet",
         "TEXINPUTS",
         "texlive",
+        "tolower",
         "xetex"
     ]
 }
