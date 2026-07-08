@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+printf 'DEBUG: Validating dist artifacts...\n'
+
+printf 'DEBUG: Setting variables...\n'
 DIST_DIR="${DIST_DIR:-dist}"
 ARTIFACT_BASENAME="${ARTIFACT_BASENAME:-resume_ryan-wallace}"
 PAGES_BASE_URL="${PAGES_BASE_URL:-https://ryancswallace.github.io/resume}"
@@ -19,7 +22,17 @@ required_files=(
     index.html
     favicon.ico
 )
+printf 'DEBUG: Set variables...\n'
 
+printf 'DEBUG: Listing dist artifacts in %s...\n' "${DIST_DIR}"
+ls -l "${DIST_DIR}/${PDF_FILE}"
+ls -l "${DIST_DIR}/${MD_FILE}"
+ls -l "${DIST_DIR}/${HTML_FILE}"
+ls -l "${DIST_DIR}/${RTF_FILE}"
+ls -l "${DIST_DIR}/${TEX_FILE}"
+printf 'DEBUG: Listed dist artifacts in %s...\n' "${DIST_DIR}"
+
+printf 'DEBUG: Validating dist artifacts in %s...\n' "${DIST_DIR}"
 for file in "${required_files[@]}"; do
     path="${DIST_DIR}/${file}"
     if [[ ! -s "${path}" ]]; then
@@ -27,6 +40,8 @@ for file in "${required_files[@]}"; do
         exit 1
     fi
 done
+printf 'DEBUG: Validated dist artifacts in %s...\n' "${DIST_DIR}"
+
 
 jq -e '
     .updated_at
