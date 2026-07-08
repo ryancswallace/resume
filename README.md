@@ -7,7 +7,7 @@ My resume is:
 - Released as versioned GitHub release assets;
 - Deployed (current version only) to GitHub Pages.
 
-**Live:** `TODO`
+**Live:** `ryancswallace.github.io/resume`
 
 ---
 
