@@ -235,6 +235,26 @@ local function nest_title_items(items)
   return nested
 end
 
+local function has_nested_list(item)
+  for _, block in ipairs(item) do
+    if block.t == "BulletList" or block.t == "OrderedList" then
+      return true
+    end
+  end
+
+  return false
+end
+
+local function tighten_deepest_items(items)
+  for _, item in ipairs(items) do
+    if not has_nested_list(item) and #item == 1 and item[1].t == "Para" then
+      item[1] = pandoc.Plain(item[1].content)
+    end
+  end
+
+  return items
+end
+
 function Div(div)
   if is_resume_heading(div) then
     return resume_heading_blocks(div)
@@ -269,6 +289,8 @@ function BulletList(list)
   if should_nest then
     list.content = nest_title_items(list.content)
   end
+
+  list.content = tighten_deepest_items(list.content)
 
   return list
 end

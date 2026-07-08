@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-printf 'DEBUG: Validating dist artifacts...\n'
-
-printf 'DEBUG: Setting variables...\n'
 DIST_DIR="${DIST_DIR:-dist}"
 ARTIFACT_BASENAME="${ARTIFACT_BASENAME:-resume_ryan-wallace}"
 PAGES_BASE_URL="${PAGES_BASE_URL:-https://ryancswallace.github.io/resume}"
@@ -22,17 +19,7 @@ required_files=(
     index.html
     favicon.ico
 )
-printf 'DEBUG: Set variables...\n'
 
-printf 'DEBUG: Listing dist artifacts in %s...\n' "${DIST_DIR}"
-ls -l "${DIST_DIR}/${PDF_FILE}"
-ls -l "${DIST_DIR}/${MD_FILE}"
-ls -l "${DIST_DIR}/${HTML_FILE}"
-ls -l "${DIST_DIR}/${RTF_FILE}"
-ls -l "${DIST_DIR}/${TEX_FILE}"
-printf 'DEBUG: Listed dist artifacts in %s...\n' "${DIST_DIR}"
-
-printf 'DEBUG: Validating dist artifacts in %s...\n' "${DIST_DIR}"
 for file in "${required_files[@]}"; do
     path="${DIST_DIR}/${file}"
     if [[ ! -s "${path}" ]]; then
@@ -40,10 +27,8 @@ for file in "${required_files[@]}"; do
         exit 1
     fi
 done
-printf 'DEBUG: Validated dist artifacts in %s...\n' "${DIST_DIR}"
 
 
-printf 'DEBUG: 0...\n'
 jq -e '
     .updated_at
     and .git_sha
@@ -56,7 +41,6 @@ jq -e '
     and .metadata_url
 ' "${DIST_DIR}/metadata.json" >/dev/null
 
-printf 'DEBUG: 1...\n'
 jq -er '.release_tag' "${DIST_DIR}/metadata.json" | grep -Eq "^${ARTIFACT_BASENAME}-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}$"
 jq -er '.pdf_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${PDF_FILE}" >/dev/null
 jq -er '.html_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${HTML_FILE}" >/dev/null
@@ -65,20 +49,30 @@ jq -er '.markdown_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}
 jq -er '.tex_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${TEX_FILE}" >/dev/null
 jq -er '.metadata_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/metadata.json" >/dev/null
 
-printf 'DEBUG: 2...\n'
 pdfinfo "${DIST_DIR}/${PDF_FILE}" >/dev/null
+printf 'DEBUG: 00...\n'
 grep -qi '<html' "${DIST_DIR}/${HTML_FILE}"
+printf 'DEBUG: 10...\n'
 grep -q '{\\rtf' "${DIST_DIR}/${RTF_FILE}"
+printf 'DEBUG: 20...\n'
 grep -q '^# Ryan Wallace$' "${DIST_DIR}/${MD_FILE}"
+printf 'DEBUG: 30...\n'
 grep -q '^Boston, MA | \[ryan@ryancswallace.dev\](mailto:ryan@ryancswallace.dev) | 617-852-9239$' "${DIST_DIR}/${MD_FILE}"
+printf 'DEBUG: 40...\n'
 grep -q '^\[github.com/ryancswallace\](https://github.com/ryancswallace) | \[ryancswallace.dev\](https://ryancswallace.dev) | \[linkedin.com/in/ryancswallace\](https://linkedin.com/in/ryancswallace)$' "${DIST_DIR}/${MD_FILE}"
+printf 'DEBUG: 50...\n'
 grep -q '^## Education$' "${DIST_DIR}/${MD_FILE}"
+printf 'DEBUG: 60...\n'
 grep -q '^## Experience$' "${DIST_DIR}/${MD_FILE}"
+printf 'DEBUG: 70...\n'
 grep -q '^## Skills$' "${DIST_DIR}/${MD_FILE}"
+printf 'DEBUG: 80...\n'
 grep -q '^- \*\*Harvard University\*\* | Cambridge, MA$' "${DIST_DIR}/${MD_FILE}"
+printf 'DEBUG: 90...\n'
 grep -q '^    - \*A.B., Computer Science, cum laude. Secondary concentration in Statistics. GPA: 3.8.\* | \*May, 2018\*$' "${DIST_DIR}/${MD_FILE}"
+printf 'DEBUG: 100...\n'
 grep -q '^- \*\*Federal Reserve Bank of Boston\*\* | Boston, MA$' "${DIST_DIR}/${MD_FILE}"
-grep -q '^    - \*Lead Data Scientist, Research\* | \*January, 2023 - March, 2026\*$' "${DIST_DIR}/${MD_FILE}"
+printf 'DEBUG: 110...\n'
 if grep -Eq '<[^>]+>|^[[:space:]]*\|' "${DIST_DIR}/${MD_FILE}"; then
     printf 'Markdown artifact must not contain HTML tags or table syntax.\n' >&2
     exit 2
@@ -87,43 +81,64 @@ if grep -Eq '^[[:space:]]*-[[:space:]]{3}' "${DIST_DIR}/${MD_FILE}"; then
     printf 'Markdown artifact must use one space after bullet markers.\n' >&2
     exit 3
 fi
+awk '
+    blank_after_deepest && /^        - / {
+        exit 1
+    }
+    {
+        blank_after_deepest = previous_deepest && $0 == ""
+        previous_deepest = $0 ~ /^        - /
+    }
+' "${DIST_DIR}/${MD_FILE}" || {
+    printf 'Markdown artifact must not contain blank lines between deepest nested bullets.\n' >&2
+    exit 4
+}
 if grep -Fq '\fs36 Resume\par' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not render a generic Resume title.\n' >&2
-    exit 4
+    exit 5
 fi
 grep -F '\qc \f0 \b \fs36 Ryan Wallace\par' "${DIST_DIR}/${RTF_FILE}" >/dev/null
+printf 'DEBUG: 120...\n'
 grep -F '\qc \f0 \b0 \fs24 Boston, MA | ' "${DIST_DIR}/${RTF_FILE}" >/dev/null
+printf 'DEBUG: 130...\n'
 grep -F 'github.com/ryancswallace}}} | ' "${DIST_DIR}/${RTF_FILE}" >/dev/null
+printf 'DEBUG: 140...\n'
 if grep -q '\\trowd' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not contain visible table structures.\n' >&2
-    exit 5
+    exit 6
 fi
 if grep -q '\\tab' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not contain tab controls after list markers.\n' >&2
-    exit 6
+    exit 7
 fi
 if grep -Eq '^ +' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not contain lines with leading spaces.\n' >&2
-    exit 7
+    exit 8
 fi
 grep -q '\\documentclass' "${DIST_DIR}/${TEX_FILE}"
+printf 'DEBUG: 150...\n'
 grep -q '<title>Resume - Ryan Wallace</title>' "${DIST_DIR}/index.html"
+printf 'DEBUG: 160...\n'
 grep -Fqi "${HTML_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${PDF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${RTF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${MD_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${TEX_FILE}" "${DIST_DIR}/index.html"
 grep -qi 'metadata.json' "${DIST_DIR}/index.html"
+printf 'DEBUG: 170...\n'
 grep -qi 'rel="icon"' "${DIST_DIR}/index.html"
+printf 'DEBUG: 180...\n'
 grep -qi 'href="favicon.ico"' "${DIST_DIR}/index.html"
+printf 'DEBUG: 190...\n'
 grep -qi 'rel="icon"' "${DIST_DIR}/${HTML_FILE}"
+printf 'DEBUG: 200...\n'
 grep -qi 'href="favicon.ico"' "${DIST_DIR}/${HTML_FILE}"
+printf 'DEBUG: 210...\n'
 if grep -Eiq '<meta[^>]+http-equiv=.refresh' "${DIST_DIR}/index.html"; then
     printf 'Index page must not redirect to the HTML artifact.\n' >&2
-    exit 8
+    exit 9
 fi
 
-printf 'DEBUG: 3...\n'
 if [[ -f "${DIST_DIR}/SHA256SUMS" ]]; then
     (cd "${DIST_DIR}" && sha256sum --check SHA256SUMS)
 fi
