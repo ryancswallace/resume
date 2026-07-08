@@ -8,6 +8,7 @@ required_files=(
     resume.tex
     metadata.json
     index.html
+    favicon.ico
 )
 
 for file in "${required_files[@]}"; do
@@ -42,6 +43,10 @@ grep -qi 'resume.html' "${DIST_DIR}/index.html"
 grep -qi 'resume.pdf' "${DIST_DIR}/index.html"
 grep -qi 'resume.tex' "${DIST_DIR}/index.html"
 grep -qi 'metadata.json' "${DIST_DIR}/index.html"
+grep -qi 'rel="icon"' "${DIST_DIR}/index.html"
+grep -qi 'href="favicon.ico"' "${DIST_DIR}/index.html"
+grep -qi 'rel="icon"' "${DIST_DIR}/resume.html"
+grep -qi 'href="favicon.ico"' "${DIST_DIR}/resume.html"
 if grep -Eiq '<meta[^>]+http-equiv=.refresh' "${DIST_DIR}/index.html"; then
     printf 'Index page must not redirect to the HTML resume.\n' >&2
     exit 1

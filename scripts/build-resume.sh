@@ -11,9 +11,16 @@ PAGES_BASE_URL="${PAGES_BASE_URL:-https://ryancswallace.github.io/resume}"
 UPDATED_AT="${UPDATED_AT:-$(date -u +%Y-%m-%dT%H-%M-%S)}"
 RELEASE_TAG="${RELEASE_TAG:-resume-${UPDATED_AT}}"
 GIT_SHA="${GIT_SHA:-${GITHUB_SHA:-$(git rev-parse HEAD 2>/dev/null || printf 'unknown')}}"
+FAVICON_SOURCE="${FAVICON_SOURCE:-assets/rw_favicons/favicon.ico}"
+FAVICON_FILE="favicon.ico"
 
 if [[ ! -f "${ENTRYPOINT}" ]]; then
     printf 'Resume entrypoint not found: %s\n' "${ENTRYPOINT}" >&2
+    exit 1
+fi
+
+if [[ ! -f "${FAVICON_SOURCE}" ]]; then
+    printf 'Favicon source not found: %s\n' "${FAVICON_SOURCE}" >&2
     exit 1
 fi
 
@@ -21,6 +28,7 @@ export TEXINPUTS="${SRC_DIR}//:${TEXINPUTS:-}"
 
 rm -rf "${DIST_DIR}" "${PDF_BUILD_DIR}" "${HTML_BUILD_DIR}"
 mkdir -p "${DIST_DIR}" "${PDF_BUILD_DIR}" "${HTML_BUILD_DIR}"
+cp "${FAVICON_SOURCE}" "${DIST_DIR}/${FAVICON_FILE}"
 
 latexmk \
     -pdf \
@@ -74,6 +82,24 @@ inline_css() {
     mv "${tmp_file}" "${html_file}"
 }
 
+add_favicon_link() {
+    local html_file="$1"
+    local tmp_file
+
+    [[ -f "${html_file}" ]] || return 0
+    tmp_file="$(mktemp)"
+    awk -v favicon="${FAVICON_FILE}" '
+        {
+            if (!inserted && tolower($0) ~ /<\/head>/) {
+                sub(/<\/head>/, "    <link rel=\"icon\" href=\"" favicon "\" sizes=\"any\">\n&")
+                inserted = 1
+            }
+            print
+        }
+    ' "${html_file}" > "${tmp_file}"
+    mv "${tmp_file}" "${html_file}"
+}
+
 build_html_with_make4ht() {
     local tmp_work
 
@@ -107,6 +133,8 @@ if ! build_html_with_make4ht; then
     build_html_with_pandoc
 fi
 
+add_favicon_link "${DIST_DIR}/resume.html"
+
 cat > "${DIST_DIR}/metadata.json" <<JSON
 {
   "updated_at": "${UPDATED_AT}",
@@ -126,6 +154,7 @@ cat > "${DIST_DIR}/index.html" <<HTML
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Resume - Ryan Wallace</title>
+    <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -253,7 +282,7 @@ HTML
 
 (
     cd "${DIST_DIR}"
-    sha256sum resume.pdf resume.html resume.tex metadata.json index.html > SHA256SUMS
+    sha256sum resume.pdf resume.html resume.tex metadata.json index.html favicon.ico > SHA256SUMS
 )
 
 printf 'Built resume artifacts in %s for %s\n' "${DIST_DIR}" "${RELEASE_TAG}"
