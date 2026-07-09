@@ -9,6 +9,7 @@ DIST_DIR="${DIST_DIR:-dist}"
 PDF_BUILD_DIR="${BUILD_DIR}/pdf"
 PAGES_BASE_URL="${PAGES_BASE_URL:-https://ryancswallace.github.io/resume}"
 UPDATED_AT="${UPDATED_AT:-$(date -u +%Y-%m-%dT%H-%M-%S)}"
+UPDATED_DATE="${UPDATED_AT%%T*}"
 RELEASE_TAG="${RELEASE_TAG:-${ARTIFACT_BASENAME}-${UPDATED_AT}}"
 GIT_SHA="${GIT_SHA:-${GITHUB_SHA:-$(git rev-parse HEAD 2>/dev/null || printf 'unknown')}}"
 FAVICON_SOURCE="${FAVICON_SOURCE:-assets/rw_favicons/favicon.ico}"
@@ -29,11 +30,22 @@ if [[ ! -f "${FAVICON_SOURCE}" ]]; then
     exit 1
 fi
 
-export TEXINPUTS="${SRC_DIR}//:${TEXINPUTS:-}"
+export TEXINPUTS="${PDF_BUILD_DIR}//:${SRC_DIR}//:${TEXINPUTS:-}"
 
 rm -rf "${DIST_DIR}" "${PDF_BUILD_DIR}"
 mkdir -p "${DIST_DIR}" "${PDF_BUILD_DIR}"
 cp "${FAVICON_SOURCE}" "${DIST_DIR}/${FAVICON_FILE}"
+
+tex_escape() {
+    sed \
+        -e 's/[\\&%$#_{}]/\\&/g' \
+        -e 's/~/\\textasciitilde{}/g' \
+        -e 's/\^/\\textasciicircum{}/g'
+}
+
+printf '\\renewcommand{\\resumeUpdatedAt}{%s}\n' \
+    "$(printf '%s' "${UPDATED_DATE}" | tex_escape)" \
+    > "${PDF_BUILD_DIR}/resume-updated-at.tex"
 
 latexmk \
     -pdf \

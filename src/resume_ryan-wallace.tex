@@ -19,6 +19,7 @@
 \usepackage[english]{babel}
 \usepackage{tabularx}
 \input{glyphtounicode}
+\definecolor{resumeTimestamp}{gray}{0.62}
 
 
 %----------FONT OPTIONS----------
@@ -35,7 +36,9 @@
 
 \pagestyle{fancy}
 \fancyhf{} % clear all header and footer fields
-\fancyfoot{}
+\providecommand{\resumeUpdatedAt}{}
+\InputIfFileExists{resume-updated-at.tex}{}{}
+\fancyfoot[R]{\ifx\resumeUpdatedAt\empty\else\makebox[0pt][r]{\color{resumeTimestamp}\scriptsize Last updated \resumeUpdatedAt}\fi}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 
@@ -45,6 +48,11 @@
 \addtolength{\textwidth}{1in}
 \addtolength{\topmargin}{-.5in}
 \addtolength{\textheight}{1.0in}
+\newlength{\resumeFooterWidth}
+\setlength{\resumeFooterWidth}{0.97\textwidth}
+\addtolength{\resumeFooterWidth}{0.15in}
+\setlength{\headwidth}{\resumeFooterWidth}
+\setlength{\footskip}{14pt}
 
 \urlstyle{same}
 
@@ -94,7 +102,7 @@
 
 \newcommand{\resumeDetail}[2]{
   \item\small{
-    \textit{#1}: #2 \vspace{-2pt}
+    \textit{#1}: #2 \vspace{-1pt}
   }
 }
 
@@ -103,7 +111,7 @@
 \newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
 \newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
 \newcommand{\resumeItemListStart}{\begin{itemize}}
-\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-7.5pt}}
 \newcommand{\resumeDetailListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
 \newcommand{\resumeDetailListEnd}{\end{itemize}\vspace{-5pt}}
 
@@ -115,7 +123,7 @@
 
 %----------HEADING----------
 \begin{center}
-    \textbf{\huge \scshape Ryan Wallace} \\ \vspace{1pt}
+    \textbf{\huge \scshape Ryan Wallace} \\ \vspace{3pt}
     \small Boston, MA $|$ \href{mailto:ryan@ryancswallace.dev}{\underline{ryan@ryancswallace.dev}} $|$ 617-852-9239 \\
     \href{https://github.com/ryancswallace}{\underline{github.com/ryancswallace}} $|$
     \href{https://ryancswallace.dev}{\underline{ryancswallace.dev}} $|$
@@ -170,6 +178,7 @@
         \resumeItem{Created data pipelines to continuously update datasets scraped from public sites and retrieved from REST APIs.}
       \resumeItemListEnd
 
+    \vspace{6pt}
     \resumeSubheading
       {Harvard Data Ventures}{Cambridge, MA}
       {President}{December, 2017 - September, 2018}
@@ -184,6 +193,7 @@
         \resumeItem{Refined project specifications, developed models, completed analyses and simulations, and presented results regularly to clients' technical and business teams.}
       \resumeItemListEnd
 
+    \vspace{6pt}
     \resumeSubheading
       {Arrowstreet Capital}{Boston, MA}
       {Research Intern}{June, 2017 - August, 2017}
@@ -192,6 +202,7 @@
         \resumeItem{Used Bayesian regression and time series analysis tools to decompose fund returns.}
       \resumeItemListEnd
 
+    \vspace{6pt}
     \resumeSubheading
       {BNY Mellon}{New York, NY}
       {Software Engineering Intern}{June, 2016 - August, 2016}
@@ -208,8 +219,11 @@
  \begin{itemize}[leftmargin=0.15in, label={}]
     \small{\item{
      \textbf{Computing}{: Object oriented and functional programming; OLAP data system design; stream processing; REST APIs; agile development.} \\
+     \vspace{3.5pt}
      \textbf{Statistics/ML}{: Generalized linear models; machine learning techniques for text clustering, search, and matching; model explanation.} \\
+     \vspace{3.5pt}
      \textbf{Languages}{: Python; SQL; C; R; OCaml; Bash.} \\
+     \vspace{3.5pt}
      \textbf{Technologies}{: Numerical Python stack; Spark; Airflow; relational and key-value (NoSQL) databases; Docker; AWS; Terraform; Ansible; Linux (RHEL, Alma); Git.}
     }}
  \end{itemize}
