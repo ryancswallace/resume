@@ -68,11 +68,7 @@ sanitize_tex() {
     ' "$1"
 }
 
-if command -v latexpand >/dev/null 2>&1; then
-    latexpand --empty-comments "${ENTRYPOINT}" | sanitize_tex /dev/stdin > "${DIST_DIR}/${TEX_FILE}"
-else
-    sanitize_tex "${ENTRYPOINT}" > "${DIST_DIR}/${TEX_FILE}"
-fi
+sanitize_tex "${ENTRYPOINT}" > "${DIST_DIR}/${TEX_FILE}"
 
 strip_leading_spaces() {
     local file="$1"
