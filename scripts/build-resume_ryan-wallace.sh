@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# cspell:ignore pageshow
 set -euo pipefail
 
 SRC_DIR="${SRC_DIR:-src}"
@@ -152,11 +153,82 @@ cat > "${DIST_DIR}/index.html" <<HTML
     <link rel="icon" href="favicon.ico" sizes="any">
     <script>
       (() => {
-        const storedTheme = localStorage.getItem("theme");
+        const storageKey = "theme";
+        const sharedCookieName = "rw-theme";
+        const sharedCookieDomain = "ryancswallace.dev";
+        const sharedCookieMaxAge = 60 * 60 * 24 * 365;
+
+        function isTheme(value) {
+          return value === "light" || value === "dark";
+        }
+
+        function getSharedTheme() {
+          const cookie = document.cookie
+            .split(";")
+            .map((value) => value.trim())
+            .find((value) => value.startsWith(sharedCookieName + "="));
+          const value = cookie?.slice(sharedCookieName.length + 1);
+          return isTheme(value) ? value : null;
+        }
+
+        function getLocalTheme() {
+          try {
+            const value = localStorage.getItem(storageKey);
+            return isTheme(value) ? value : null;
+          } catch {
+            return null;
+          }
+        }
+
+        function setLocalTheme(theme) {
+          try {
+            localStorage.setItem(storageKey, theme);
+          } catch {
+            // The shared cookie still preserves the preference when storage is unavailable.
+          }
+        }
+
+        function setSharedTheme(theme) {
+          document.cookie =
+            sharedCookieName +
+            "=" +
+            theme +
+            "; Path=/; Domain=" +
+            sharedCookieDomain +
+            "; Max-Age=" +
+            sharedCookieMaxAge +
+            "; SameSite=Lax; Secure";
+        }
+
+        function getSavedTheme() {
+          return getSharedTheme() || getLocalTheme();
+        }
+
+        function saveTheme(theme) {
+          setLocalTheme(theme);
+          setSharedTheme(theme);
+        }
+
+        const sharedTheme = getSharedTheme();
+        const localTheme = getLocalTheme();
+
+        if (sharedTheme) {
+          setLocalTheme(sharedTheme);
+        } else if (localTheme) {
+          saveTheme(localTheme);
+        }
+
         const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
           ? "dark"
           : "light";
-        document.documentElement.dataset.theme = storedTheme || preferredTheme;
+        document.documentElement.dataset.theme = getSavedTheme() || preferredTheme;
+
+        window.rwThemePreference = {
+          getSavedTheme,
+          getSharedTheme,
+          saveTheme,
+          setLocalTheme,
+        };
       })();
     </script>
     <style>
@@ -594,7 +666,7 @@ cat > "${DIST_DIR}/index.html" <<HTML
           theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
         );
         themeColor.setAttribute("content", theme === "dark" ? "#212737" : "#fdfdfd");
-        if (persist) localStorage.setItem("theme", theme);
+        if (persist) window.rwThemePreference.saveTheme(theme);
       }
 
       applyTheme(document.documentElement.dataset.theme);
@@ -604,8 +676,20 @@ cat > "${DIST_DIR}/index.html" <<HTML
         applyTheme(nextTheme, true);
       });
 
+      function syncSharedTheme() {
+        const sharedTheme = window.rwThemePreference.getSharedTheme();
+
+        if (sharedTheme && sharedTheme !== document.documentElement.dataset.theme) {
+          window.rwThemePreference.setLocalTheme(sharedTheme);
+          applyTheme(sharedTheme);
+        }
+      }
+
+      window.addEventListener("focus", syncSharedTheme);
+      window.addEventListener("pageshow", syncSharedTheme);
+
       systemTheme.addEventListener("change", (event) => {
-        if (!localStorage.getItem("theme")) {
+        if (!window.rwThemePreference.getSavedTheme()) {
           applyTheme(event.matches ? "dark" : "light");
         }
       });
