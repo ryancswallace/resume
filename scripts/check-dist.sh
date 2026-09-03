@@ -3,7 +3,7 @@ set -euo pipefail
 
 DIST_DIR="${DIST_DIR:-dist}"
 ARTIFACT_BASENAME="${ARTIFACT_BASENAME:-resume_ryan-wallace}"
-PAGES_BASE_URL="${PAGES_BASE_URL:-https://ryancswallace.github.io/resume}"
+PAGES_BASE_URL="${PAGES_BASE_URL:-https://resume.ryancswallace.dev}"
 PDF_FILE="${ARTIFACT_BASENAME}.pdf"
 RTF_FILE="${ARTIFACT_BASENAME}.rtf"
 MD_FILE="${ARTIFACT_BASENAME}.md"
@@ -96,6 +96,8 @@ if grep -Eq '^ +' "${DIST_DIR}/${RTF_FILE}"; then
 fi
 grep -q '\\documentclass' "${DIST_DIR}/${TEX_FILE}"
 grep -q '<title>Resume - Ryan Wallace</title>' "${DIST_DIR}/index.html"
+grep -Fq "<link rel=\"canonical\" href=\"${PAGES_BASE_URL}/\">" "${DIST_DIR}/index.html"
+grep -Fq "<meta property=\"og:url\" content=\"${PAGES_BASE_URL}/\">" "${DIST_DIR}/index.html"
 grep -Fqi "${PDF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${RTF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${MD_FILE}" "${DIST_DIR}/index.html"

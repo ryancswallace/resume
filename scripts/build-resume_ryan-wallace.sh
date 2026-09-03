@@ -7,7 +7,7 @@ ENTRYPOINT="${RESUME_TEX:-${SRC_DIR}/${ARTIFACT_BASENAME}.tex}"
 BUILD_DIR="${BUILD_DIR:-build}"
 DIST_DIR="${DIST_DIR:-dist}"
 PDF_BUILD_DIR="${BUILD_DIR}/pdf"
-PAGES_BASE_URL="${PAGES_BASE_URL:-https://ryancswallace.github.io/resume}"
+PAGES_BASE_URL="${PAGES_BASE_URL:-https://resume.ryancswallace.dev}"
 UPDATED_AT="${UPDATED_AT:-$(date -u +%Y-%m-%dT%H-%M-%S)}"
 UPDATED_DATE="${UPDATED_AT%%T*}"
 RELEASE_TAG="${RELEASE_TAG:-${ARTIFACT_BASENAME}-${UPDATED_AT}}"
@@ -146,6 +146,8 @@ cat > "${DIST_DIR}/index.html" <<HTML
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Resume - Ryan Wallace</title>
     <meta name="description" content="Ryan Wallace's resume in PDF, RTF, Markdown, and TeX formats.">
+    <link rel="canonical" href="${PAGES_BASE_URL}/">
+    <meta property="og:url" content="${PAGES_BASE_URL}/">
     <meta name="theme-color" content="#fdfdfd">
     <link rel="icon" href="favicon.ico" sizes="any">
     <script>

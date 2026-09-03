@@ -18,7 +18,7 @@ concurrency:
 
 env:
   ARTIFACT_BASENAME: resume_ryan-wallace
-  PAGES_BASE_URL: https://ryancswallace.github.io/resume
+  PAGES_BASE_URL: https://resume.ryancswallace.dev
 
 jobs:
   build:
