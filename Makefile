@@ -18,7 +18,7 @@ DEV_IMAGE ?= resume-dev
 DOCKER_RUN = docker run --rm -v "$(CURDIR):/workspace" -w /workspace --user node $(DEV_IMAGE)
 
 MARKDOWN_FILES ?= "**/*.md"
-PRETTIER_FILES ?= "*.json" ".devcontainer/*.json" ".github/workflows/*.yml" ".markdownlint-cli2.yaml" ".vscode/*.json" "*.md"
+PRETTIER_FILES ?= "*.json" ".devcontainer/*.json" ".github/workflows/*.yml" ".markdownlint-cli2.yaml" ".vscode/*.json" "*.md" "src/site/*.{css,html,js}"
 SHELL_FILES ?= scripts/*.sh
 
 .PHONY: help
@@ -92,7 +92,7 @@ check-dist: ## Validate generated dist artifacts.
 
 .PHONY: checksums
 checksums: ## Recompute SHA256SUMS for generated dist artifacts.
-	cd "$(DIST_DIR)" && sha256sum "$(ARTIFACT_BASENAME).pdf" "$(ARTIFACT_BASENAME).rtf" "$(ARTIFACT_BASENAME).md" "$(ARTIFACT_BASENAME).tex" metadata.json index.html favicon.ico > SHA256SUMS
+	cd "$(DIST_DIR)" && sha256sum "$(ARTIFACT_BASENAME).pdf" "$(ARTIFACT_BASENAME).rtf" "$(ARTIFACT_BASENAME).md" "$(ARTIFACT_BASENAME).tex" metadata.json index.html resume.css resume.js favicon.ico rw_favicons/* > SHA256SUMS
 
 .PHONY: metadata
 metadata: ## Print generated dist metadata.

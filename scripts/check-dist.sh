@@ -15,7 +15,16 @@ required_files=(
     "${TEX_FILE}"
     metadata.json
     index.html
+    resume.css
+    resume.js
     favicon.ico
+    rw_favicons/favicon.ico
+    rw_favicons/favicon-16x16.png
+    rw_favicons/favicon-32x32.png
+    rw_favicons/apple-touch-icon.png
+    rw_favicons/android-chrome-192x192.png
+    rw_favicons/android-chrome-512x512.png
+    rw_favicons/site.webmanifest
 )
 
 for file in "${required_files[@]}"; do
@@ -95,19 +104,28 @@ if grep -Eq '^ +' "${DIST_DIR}/${RTF_FILE}"; then
     exit 8
 fi
 grep -q '\\documentclass' "${DIST_DIR}/${TEX_FILE}"
-grep -q '<title>Resume - Ryan Wallace</title>' "${DIST_DIR}/index.html"
-grep -Fq "<link rel=\"canonical\" href=\"${PAGES_BASE_URL}/\">" "${DIST_DIR}/index.html"
-grep -Fq "<meta property=\"og:url\" content=\"${PAGES_BASE_URL}/\">" "${DIST_DIR}/index.html"
-grep -Fq 'const sharedCookieName = "rw-theme";' "${DIST_DIR}/index.html"
-grep -Fq 'const sharedCookieDomain = "ryancswallace.dev";' "${DIST_DIR}/index.html"
-grep -Fq 'SameSite=Lax; Secure' "${DIST_DIR}/index.html"
+grep -q '<title>Resume | Ryan Wallace</title>' "${DIST_DIR}/index.html"
+grep -Fq "<link rel=\"canonical\" href=\"${PAGES_BASE_URL}/\" />" "${DIST_DIR}/index.html"
+grep -Fq "<meta property=\"og:url\" content=\"${PAGES_BASE_URL}/\" />" "${DIST_DIR}/index.html"
+grep -Fq 'const sharedCookieName = "rw-theme";' "${DIST_DIR}/resume.js"
+grep -Fq 'const sharedCookieDomain = "ryancswallace.dev";' "${DIST_DIR}/resume.js"
+grep -Fq 'SameSite=Lax; Secure' "${DIST_DIR}/resume.js"
+grep -Fq -- '--background: #fdfdfd;' "${DIST_DIR}/resume.css"
+grep -Fq -- '--background: #212737;' "${DIST_DIR}/resume.css"
+grep -Fq -- '--accent: #006cac;' "${DIST_DIR}/resume.css"
+grep -Fq -- '--accent: #ff6b01;' "${DIST_DIR}/resume.css"
 grep -Fqi "${PDF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${RTF_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${MD_FILE}" "${DIST_DIR}/index.html"
 grep -Fqi "${TEX_FILE}" "${DIST_DIR}/index.html"
 grep -qi 'metadata.json' "${DIST_DIR}/index.html"
+grep -Fq 'id="menu-btn"' "${DIST_DIR}/index.html"
+grep -Fq 'id="theme-btn"' "${DIST_DIR}/index.html"
+grep -Fq 'aria-current="page">Resume</a>' "${DIST_DIR}/index.html"
 grep -qi 'rel="icon"' "${DIST_DIR}/index.html"
-grep -qi 'href="favicon.ico"' "${DIST_DIR}/index.html"
+grep -Fqi 'href="/rw_favicons/favicon.ico"' "${DIST_DIR}/index.html"
+grep -Fqi 'rel="apple-touch-icon"' "${DIST_DIR}/index.html"
+grep -Fqi 'rel="manifest"' "${DIST_DIR}/index.html"
 if grep -Eiq '<meta[^>]+http-equiv=.refresh' "${DIST_DIR}/index.html"; then
     printf 'Index page must not redirect.\n' >&2
     exit 9

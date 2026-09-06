@@ -7,7 +7,7 @@ public/pagefind
 build/
 dist/
 *.egg-info/
-site/
+/site/
 
 # Test coverage and reports
 .coverage
