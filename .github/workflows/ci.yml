@@ -162,7 +162,13 @@ jobs:
           - TeX: ${PAGES_BASE_URL}/${ARTIFACT_BASENAME}.tex
           NOTES
 
-          gh release create "${RELEASE_TAG}" dist/* \
+          gh release create "${RELEASE_TAG}" \
+            "dist/${ARTIFACT_BASENAME}.pdf" \
+            "dist/${ARTIFACT_BASENAME}.rtf" \
+            "dist/${ARTIFACT_BASENAME}.md" \
+            "dist/${ARTIFACT_BASENAME}.tex" \
+            dist/SHA256SUMS \
+            dist/metadata.json \
             --target "${GITHUB_SHA}" \
             --title "${RELEASE_TAG}" \
             --notes-file release-notes.md
