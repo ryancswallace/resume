@@ -26,7 +26,7 @@ help: ## Show this help message.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make <target>\n\nTargets:\n"} /^[a-zA-Z0-9_.-]+:.*##/ {printf "  %-24s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .PHONY: build
-build: ## Build all dist/resume_ryan-wallace.* artifacts.
+build: ## Build the combined public resume and its site assets.
 	SRC_DIR="$(SRC_DIR)" \
 	ARTIFACT_BASENAME="$(ARTIFACT_BASENAME)" \
 	RESUME_TEX="$(RESUME_TEX)" \
@@ -38,6 +38,31 @@ build: ## Build all dist/resume_ryan-wallace.* artifacts.
 	GIT_SHA="$(GIT_SHA)" \
 	scripts/build-resume_ryan-wallace.sh
 
+.PHONY: build-variants
+build-variants: build-software-engineering build-ml-ai-engineering ## Build and validate both targeted resumes.
+
+.PHONY: build-software-engineering
+build-software-engineering: ## Build the software engineering resume in dist/software-engineering/.
+	$(MAKE) dist \
+		ARTIFACT_BASENAME=resume_ryan-wallace_software-engineering \
+		RESUME_TEX="$(SRC_DIR)/resume_ryan-wallace_software-engineering.tex" \
+		BUILD_DIR="$(BUILD_DIR)/software-engineering" \
+		DIST_DIR="$(DIST_DIR)/software-engineering" \
+		PAGES_BASE_URL="$(PAGES_BASE_URL)/software-engineering" \
+		UPDATED_AT="$(UPDATED_AT)" \
+		RELEASE_TAG="resume_ryan-wallace_software-engineering-$(UPDATED_AT)"
+
+.PHONY: build-ml-ai-engineering
+build-ml-ai-engineering: ## Build the ML/AI engineering resume in dist/ml-ai-engineering/.
+	$(MAKE) dist \
+		ARTIFACT_BASENAME=resume_ryan-wallace_ml-ai-engineering \
+		RESUME_TEX="$(SRC_DIR)/resume_ryan-wallace_ml-ai-engineering.tex" \
+		BUILD_DIR="$(BUILD_DIR)/ml-ai-engineering" \
+		DIST_DIR="$(DIST_DIR)/ml-ai-engineering" \
+		PAGES_BASE_URL="$(PAGES_BASE_URL)/ml-ai-engineering" \
+		UPDATED_AT="$(UPDATED_AT)" \
+		RELEASE_TAG="resume_ryan-wallace_ml-ai-engineering-$(UPDATED_AT)"
+
 .PHONY: pdf
 pdf: ## Compile only the PDF into the build directory.
 	mkdir -p "$(BUILD_DIR)/pdf"
@@ -46,10 +71,13 @@ pdf: ## Compile only the PDF into the build directory.
 		-outdir="$(BUILD_DIR)/pdf" "$(RESUME_TEX)"
 
 .PHONY: dist
-dist: build check-dist ## Build and validate publishable dist artifacts.
+dist: build ## Build and validate publishable dist artifacts.
+	$(MAKE) check-dist
 
 .PHONY: ci
-ci: precheck build postcheck ## Run the local equivalent of the CI build job.
+ci: precheck ## Check sources and build/validate all three resumes.
+	$(MAKE) dist
+	$(MAKE) build-variants DIST_DIR="$(BUILD_DIR)/targeted-resumes"
 
 .PHONY: precheck
 precheck: check-source ## Run checks that do not require generated artifacts.
@@ -88,7 +116,7 @@ format: ## Format supported text/config files with Prettier.
 
 .PHONY: check-dist
 check-dist: ## Validate generated dist artifacts.
-	DIST_DIR="$(DIST_DIR)" ARTIFACT_BASENAME="$(ARTIFACT_BASENAME)" scripts/check-dist.sh
+	DIST_DIR="$(DIST_DIR)" ARTIFACT_BASENAME="$(ARTIFACT_BASENAME)" PAGES_BASE_URL="$(PAGES_BASE_URL)" scripts/check-dist.sh
 
 .PHONY: checksums
 checksums: ## Recompute SHA256SUMS for generated dist artifacts.

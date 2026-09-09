@@ -1,4 +1,4 @@
-% Resume - Combined Public Version
+% Resume - Software Engineering
 % Author: Ryan Wallace
 % Based on Jake's Resume: https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs
 % License: MIT
@@ -20,9 +20,9 @@
 \pdfgentounicode=1
 
 \hypersetup{
-  pdftitle={Ryan Wallace - Resume},
+  pdftitle={Ryan Wallace - Software Engineering Resume},
   pdfauthor={Ryan Wallace},
-  pdfsubject={Software engineering, machine learning, data systems, and technical leadership}
+  pdfsubject={Software engineering, data systems, and technical leadership}
 }
 \urlstyle{same}
 \raggedright
@@ -89,9 +89,7 @@
     \resumeItem{Architected an AWS lakehouse supporting \textbf{45+ researchers} and \textbf{over 1 PB} of data; helped implement a migration from MariaDB ColumnStore that reduced data-platform storage costs by \textbf{75\%}.}
     \resumeItem{Built a massively parallel S3 synchronization application using SQS and AWS Lambda, sustaining \textbf{1 TiB/s aggregate transfer throughput} within an AWS region, including small objects.}
     \resumeItem{Designed, implemented, and operated a Spark cluster, an Airflow deployment, and dozens of batch and streaming pipelines; built a Spark framework for microbatch ELT on Apache Iceberg.}
-    \resumeItem{Built and served a \textbf{retrieval-augmented generation (RAG)} application over Federal Reserve System internal reports using \textbf{vLLM}; designed and used a small NVIDIA H100 GPU cluster.}
-    \resumeItem{Fine-tuned models using \textbf{LoRA} and Hugging Face Transformers; evaluated models using human review, LLM-as-a-judge, perplexity, and embedding similarity.}
-    \resumeItem{Developed transaction clustering with \textbf{HDBSCAN} and classification with random forests over embeddings and LightGBM; created training labels through human annotation and generative classification with constrained decoding.}
+    \resumeItem{Built and served a retrieval-augmented generation (RAG) application over Federal Reserve System internal reports using vLLM; designed and used a small H100 GPU cluster.}
     \resumeItem{Owned technical decisions for data science and engineering groups; led and mentored two data scientists, ran design reviews, and coordinated project teams. Initiated and led a department technical talk series.}
   \resumeItemListEnd
 
@@ -123,20 +121,20 @@
   \resumeItemListStart
     \resumeItem{Built a job execution platform with users at the Federal Reserve. Implemented daemonless local execution, durable SQLite state, dependencies, retries, concurrency controls, and logs.}
     \resumeItem{Developed \href{https://github.com/ryancswallace/Jobman-Control}{Jobman Control}, a preview shared control plane with PostgreSQL-backed coordination, idempotent submissions, namespace quotas, OIDC authentication, and mTLS agent connections.}
-    \resumeItem{Built \href{https://github.com/ryancswallace/Jobman-Diagnose}{Jobman Diagnose}, combining deterministic failure analysis with optional schema-validated LLM suggestions; preserves local findings when providers fail or suggestions fail validation.}
+    \resumeItem{Built \href{https://github.com/ryancswallace/Jobman-Diagnose}{Jobman Diagnose}, combining deterministic failure analysis with optional schema-validated AI suggestions and local fallback when providers fail.}
   \resumeItemListEnd
   \resumeProjectHeading
     {\textbf{\href{https://github.com/ryancswallace/benchmatrix}{benchmatrix}} $|$ \small Python, pytest, statistics}
     {Jun 2026 -- Present}
   \resumeItemListStart
-    \resumeItem{Created a toolkit extending pytest-benchmark with reproducible experiment matrices, repeated measurements, paired comparisons, statistical regression checks, and machine-readable CI reports.}
+    \resumeItem{Created a benchmarking toolkit extending pytest-benchmark with reproducible matrices, repeated measurements, paired experiments, statistical regression checks, and machine-readable reports for CI.}
   \resumeItemListEnd
 
   \resumeProjectHeading
     {\textbf{\href{https://github.com/ryancswallace/python-project-foundry}{Python Project Foundry}} $|$ \small Python, GitHub Actions}
     {Sep 2025 -- Present}
   \resumeItemListStart
-    \resumeItem{Built a generator for typed Python packages with tests, documentation, security checks, containers, CI, and release automation.}
+    \resumeItem{Built a project generator that creates typed Python packages with tests, documentation, security checks, containers, CI, and release automation through a consistent local and CI command interface.}
   \resumeItemListEnd
 \resumeSubHeadingListEnd
 
@@ -158,7 +156,7 @@
     {Arrowstreet Capital}{Boston, MA}
     {Research Intern}{Jun 2017 -- Aug 2017}
   \resumeItemListStart
-    \resumeItem{Deployed an equity risk analysis module to production with a \textbf{5x execution speedup} using Numba; applied Bayesian regression and time-series methods to portfolio risk analysis.}
+    \resumeItem{Implemented and deployed an equity risk analysis module to production; achieved a \textbf{5x execution speedup} over baseline using Numba.}
   \resumeItemListEnd
 
   \resumeSubheading
@@ -173,8 +171,6 @@
 \resumeDetailListStart
   \resumeSkill{Languages}{Python; Go; SQL; Bash.}
   \resumeSkill{Data Systems}{Spark; Airflow; Apache Iceberg; PostgreSQL; SQLite; batch and stream processing.}
-  \resumeSkill{ML \& AI}{scikit-learn; HDBSCAN; random forests; LightGBM; Hugging Face Transformers; LoRA; RAG; vLLM.}
-  \resumeSkill{Evaluation}{Human review; LLM-as-a-judge; perplexity; embedding similarity; statistical benchmarking.}
   \resumeSkill{AWS}{S3; Athena; Lambda; Step Functions; SQS; SNS; Textract; IAM; CloudWatch.}
   \resumeSkill{Infrastructure}{Docker; Terraform; Ansible; Linux; REST APIs; OIDC; mTLS.}
   \resumeSkill{Quality \& Operations}{pytest; GitHub Actions; CI/CD; Prometheus; Grafana; performance benchmarking.}

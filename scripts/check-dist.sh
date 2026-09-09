@@ -54,14 +54,36 @@ jq -er '.markdown_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}
 jq -er '.tex_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/${TEX_FILE}" >/dev/null
 jq -er '.metadata_url' "${DIST_DIR}/metadata.json" | grep -Fx "${PAGES_BASE_URL}/metadata.json" >/dev/null
 
-pdfinfo "${DIST_DIR}/${PDF_FILE}" >/dev/null
+pdf_page_count="$(LC_ALL=C pdfinfo "${DIST_DIR}/${PDF_FILE}" | awk '/^Pages:/ { print $2 }')"
+if [[ "${pdf_page_count}" != 2 ]]; then
+    printf 'PDF must contain exactly 2 pages; found %s in %s.\n' "${pdf_page_count:-unknown}" "${PDF_FILE}" >&2
+    exit 10
+fi
+
+pdf_text="$(pdftotext -layout "${DIST_DIR}/${PDF_FILE}" -)"
+required_pdf_text=(
+    "Ryan Wallace"
+    "ryan@ryancswallace.dev"
+    "Professional Experience"
+    "Selected Open Source Projects"
+    "Earlier Experience"
+    "Technical Skills"
+    "Education"
+)
+for text in "${required_pdf_text[@]}"; do
+    if ! grep -Fqi "${text}" <<< "${pdf_text}"; then
+        printf 'PDF is missing expected extractable text in %s: %s\n' "${PDF_FILE}" "${text}" >&2
+        exit 11
+    fi
+done
+
 grep -q '{\\rtf' "${DIST_DIR}/${RTF_FILE}"
 grep -q '^# Ryan Wallace$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^Boston, MA | \[ryan@ryancswallace.dev\](mailto:ryan@ryancswallace.dev) | 617-852-9239$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^\[github.com/ryancswallace\](https://github.com/ryancswallace) | \[ryancswallace.dev\](https://ryancswallace.dev) | \[linkedin.com/in/ryancswallace\](https://linkedin.com/in/ryancswallace)$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^## Education$' "${DIST_DIR}/${MD_FILE}"
-grep -q '^## Experience$' "${DIST_DIR}/${MD_FILE}"
-grep -q '^## Skills$' "${DIST_DIR}/${MD_FILE}"
+grep -Eq '^## (Professional )?Experience$' "${DIST_DIR}/${MD_FILE}"
+grep -Eq '^## (Technical )?Skills$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^- \*\*Harvard University\*\* | Cambridge, MA$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^- \*\*Federal Reserve Bank of Boston\*\* | Boston, MA$' "${DIST_DIR}/${MD_FILE}"
 if grep -Eq '<[^>]+>|^[[:space:]]*\|' "${DIST_DIR}/${MD_FILE}"; then

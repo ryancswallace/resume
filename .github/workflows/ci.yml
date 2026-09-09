@@ -22,7 +22,7 @@ env:
 
 jobs:
   build:
-    name: Build resume
+    name: Build and validate all resumes
     runs-on: ubuntu-latest
     outputs:
       release_tag: ${{ steps.metadata.outputs.release_tag }}
@@ -57,14 +57,6 @@ jobs:
         shell: bash
         run: npm install --global cspell markdownlint-cli2 prettier
 
-      - name: Run pre-checks
-        shell: bash
-        run: |
-          shellcheck scripts/*.sh
-          cspell .
-          markdownlint-cli2 "**/*.md"
-          prettier --check ".github/workflows/*.yml" "*.json" "*.md"
-
       - name: Install build dependencies
         shell: bash
         run: |
@@ -92,19 +84,31 @@ jobs:
             texlive-science \
             texlive-xetex
 
-      - name: Build dist artifacts
+      - name: Run resume CI checks
         shell: bash
-        run: scripts/build-resume_ryan-wallace.sh
+        run: make ci
 
-      - name: Run post-build checks
-        shell: bash
-        run: scripts/check-dist.sh
-
-      - name: Upload review artifacts
+      - name: Upload combined resume review artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{ steps.metadata.outputs.release_tag }}
           path: dist/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload software engineering review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: software-engineering-${{ steps.metadata.outputs.updated_at }}
+          path: build/targeted-resumes/software-engineering/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload ML/AI engineering review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ml-ai-engineering-${{ steps.metadata.outputs.updated_at }}
+          path: build/targeted-resumes/ml-ai-engineering/
           if-no-files-found: error
           retention-days: 30
 
