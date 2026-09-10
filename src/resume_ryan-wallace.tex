@@ -1,4 +1,4 @@
-% Resume - Combined Public Version
+% Resume - Ryan Wallace
 % Author: Ryan Wallace
 % Based on Jake's Resume: https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs
 % License: MIT
@@ -56,7 +56,7 @@
   \end{tabular*}
 }
 \newcommand{\resumeProjectHeading}[2]{
-  \needspace{5\baselineskip}\item
+  \needspace{3.5\baselineskip}\item
   \begin{tabular*}{\linewidth}{l@{\extracolsep{\fill}}r}
     #1 & \textit{\small #2} \\
   \end{tabular*}
@@ -86,25 +86,26 @@
     {Federal Reserve Bank of Boston}{Boston, MA}
     {Lead Data Scientist, Research}{Jan 2023 -- Feb 2026}
   \resumeItemListStart
-    \resumeItem{Architected an AWS lakehouse supporting \textbf{45+ researchers} and \textbf{over 1 PB} of data; helped implement a migration from MariaDB ColumnStore that reduced data-platform storage costs by \textbf{75\%}.}
-    \resumeItem{Built a massively parallel S3 synchronization application using SQS and AWS Lambda, sustaining \textbf{1 TiB/s aggregate transfer throughput} within an AWS region, including small objects.}
+    \resumeItem{Architected an AWS lakehouse supporting 200+ researchers and over 10 PB of data; helped implement a migration from MariaDB ColumnStore that reduced data-platform storage costs by 75\%.}
+    \resumeItem{Built a massively parallel S3 synchronization application using SQS and AWS Lambda, sustaining 1 TiB/s aggregate transfer throughput within an AWS region, including small objects.}
     \resumeItem{Designed, implemented, and operated a Spark cluster, an Airflow deployment, and dozens of batch and streaming pipelines; built a Spark framework for microbatch ELT on Apache Iceberg.}
-    \resumeItem{Built and served a \textbf{retrieval-augmented generation (RAG)} application over Federal Reserve System internal reports using \textbf{vLLM}; designed and used a small NVIDIA H100 GPU cluster.}
-    \resumeItem{Fine-tuned models using \textbf{LoRA} and Hugging Face Transformers; evaluated models using human review, LLM-as-a-judge, perplexity, and embedding similarity.}
-    \resumeItem{Developed transaction clustering with \textbf{HDBSCAN} and classification with random forests over embeddings and LightGBM; created training labels through human annotation and generative classification with constrained decoding.}
+    \resumeItem{Built and served a retrieval-augmented generation (RAG) application over Federal Reserve System internal reports using vLLM.}
+    \resumeItem{Designed and used a small NVIDIA H100 GPU cluster; worked with models including Llama 4 Scout through Hugging Face Transformers.}
+    \resumeItem{Fine-tuned several models using LoRA; evaluated models using human review, LLM-as-a-judge, perplexity, and embedding similarity for semantic closeness.}
+    \resumeItem{Developed transaction clustering with HDBSCAN and classification with random forests over embeddings and LightGBM; created training labels through human annotation and generative classification with constrained decoding.}
     \resumeItem{Owned technical decisions for data science and engineering groups; led and mentored two data scientists, ran design reviews, and coordinated project teams. Initiated and led a department technical talk series.}
   \resumeItemListEnd
 
   \resumeSubSubheading
     {Senior Data Scientist, Research}{Dec 2021 -- Jan 2023}
   \resumeItemListStart
-    \resumeItem{Developed a data lake with Spark Streaming ELT and Airflow orchestration; applied text clustering and classification to multi-terabyte transaction datasets.}
+    \resumeItem{Developed a data lake with Spark Streaming ELT and Airflow orchestration; categorized debit-card transactions across multi-terabyte datasets using text clustering and classification.}
   \resumeItemListEnd
 
   \resumeSubSubheading
     {Data Scientist, Research}{Dec 2020 -- Dec 2021}
   \resumeItemListStart
-    \resumeItem{Developed distributed-lag regression models and robustness checks for consumer-spending research; used SQL and scikit-learn to analyze the Main Street Lending Program.}
+    \resumeItem{Developed distributed-lag regression models and robustness checks for research on consumer spending after the CARES Act; analyzed the Main Street Lending Program using SQL and scikit-learn.}
   \resumeItemListEnd
 
   \resumeSubSubheading
@@ -115,7 +116,6 @@
 \resumeSubHeadingListEnd
 
 \section{Selected Open Source Projects}
-\small Independent development and maintenance.\normalsize
 \resumeSubHeadingListStart
   \resumeProjectHeading
     {\textbf{\href{https://github.com/ryancswallace/Jobman}{Jobman ecosystem}} $|$ \small Go, SQLite, PostgreSQL}
@@ -123,20 +123,21 @@
   \resumeItemListStart
     \resumeItem{Built a job execution platform with users at the Federal Reserve. Implemented daemonless local execution, durable SQLite state, dependencies, retries, concurrency controls, and logs.}
     \resumeItem{Developed \href{https://github.com/ryancswallace/Jobman-Control}{Jobman Control}, a preview shared control plane with PostgreSQL-backed coordination, idempotent submissions, namespace quotas, OIDC authentication, and mTLS agent connections.}
-    \resumeItem{Built \href{https://github.com/ryancswallace/Jobman-Diagnose}{Jobman Diagnose}, combining deterministic failure analysis with optional schema-validated LLM suggestions; preserves local findings when providers fail or suggestions fail validation.}
+    \resumeItem{Built \href{https://github.com/ryancswallace/Jobman-Diagnose}{Jobman Diagnose}, combining deterministic failure analysis with optional schema-validated LLM suggestions; preserves local findings and retry advice when providers fail or suggestions fail validation.}
   \resumeItemListEnd
   \resumeProjectHeading
     {\textbf{\href{https://github.com/ryancswallace/benchmatrix}{benchmatrix}} $|$ \small Python, pytest, statistics}
     {Jun 2026 -- Present}
   \resumeItemListStart
-    \resumeItem{Created a toolkit extending pytest-benchmark with reproducible experiment matrices, repeated measurements, paired comparisons, statistical regression checks, and machine-readable CI reports.}
+    \resumeItem{Created a benchmarking toolkit extending pytest-benchmark with reproducible experiment matrices, repeated measurements, paired experimental designs, and statistical comparisons for performance-regression decisions.}
+    \resumeItem{Added environment compatibility checks, evidence thresholds, and machine-readable CI reports.}
   \resumeItemListEnd
 
   \resumeProjectHeading
     {\textbf{\href{https://github.com/ryancswallace/python-project-foundry}{Python Project Foundry}} $|$ \small Python, GitHub Actions}
     {Sep 2025 -- Present}
   \resumeItemListStart
-    \resumeItem{Built a generator for typed Python packages with tests, documentation, security checks, containers, CI, and release automation.}
+    \resumeItem{Built a generator for typed Python packages with tests, documentation, security checks, containers, CI, and release automation through a consistent local and CI command interface.}
   \resumeItemListEnd
 \resumeSubHeadingListEnd
 
@@ -158,7 +159,7 @@
     {Arrowstreet Capital}{Boston, MA}
     {Research Intern}{Jun 2017 -- Aug 2017}
   \resumeItemListStart
-    \resumeItem{Deployed an equity risk analysis module to production with a \textbf{5x execution speedup} using Numba; applied Bayesian regression and time-series methods to portfolio risk analysis.}
+    \resumeItem{Implemented and deployed an equity risk analysis module to production; achieved a 5x execution speedup over baseline using Numba. Applied Bayesian regression and time-series methods to portfolio risk analysis.}
   \resumeItemListEnd
 
   \resumeSubheading
@@ -173,7 +174,8 @@
 \resumeDetailListStart
   \resumeSkill{Languages}{Python; Go; SQL; Bash.}
   \resumeSkill{Data Systems}{Spark; Airflow; Apache Iceberg; PostgreSQL; SQLite; batch and stream processing.}
-  \resumeSkill{ML \& AI}{scikit-learn; HDBSCAN; random forests; LightGBM; Hugging Face Transformers; LoRA; RAG; vLLM.}
+  \resumeSkill{Modeling}{HDBSCAN; random forests; LightGBM; scikit-learn; Bayesian regression; time-series analysis.}
+  \resumeSkill{LLMs \& Serving}{Hugging Face Transformers; LoRA; constrained decoding; RAG; vLLM; Ollama; NVIDIA H100.}
   \resumeSkill{Evaluation}{Human review; LLM-as-a-judge; perplexity; embedding similarity; statistical benchmarking.}
   \resumeSkill{AWS}{S3; Athena; Lambda; Step Functions; SQS; SNS; Textract; IAM; CloudWatch.}
   \resumeSkill{Infrastructure}{Docker; Terraform; Ansible; Linux; REST APIs; OIDC; mTLS.}

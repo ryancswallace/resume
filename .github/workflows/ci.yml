@@ -22,7 +22,7 @@ env:
 
 jobs:
   build:
-    name: Build and validate all resumes
+    name: Build and validate resume
     runs-on: ubuntu-latest
     outputs:
       release_tag: ${{ steps.metadata.outputs.release_tag }}
@@ -88,27 +88,11 @@ jobs:
         shell: bash
         run: make ci
 
-      - name: Upload combined resume review artifacts
+      - name: Upload resume review artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{ steps.metadata.outputs.release_tag }}
           path: dist/
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Upload software engineering review artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: software-engineering-${{ steps.metadata.outputs.updated_at }}
-          path: build/targeted-resumes/software-engineering/
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Upload ML/AI engineering review artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ml-ai-engineering-${{ steps.metadata.outputs.updated_at }}
-          path: build/targeted-resumes/ml-ai-engineering/
           if-no-files-found: error
           retention-days: 30
 

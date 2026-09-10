@@ -26,7 +26,7 @@ help: ## Show this help message.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make <target>\n\nTargets:\n"} /^[a-zA-Z0-9_.-]+:.*##/ {printf "  %-24s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .PHONY: build
-build: ## Build the combined public resume and its site assets.
+build: ## Build the resume and its site assets.
 	SRC_DIR="$(SRC_DIR)" \
 	ARTIFACT_BASENAME="$(ARTIFACT_BASENAME)" \
 	RESUME_TEX="$(RESUME_TEX)" \
@@ -37,31 +37,6 @@ build: ## Build the combined public resume and its site assets.
 	RELEASE_TAG="$(RELEASE_TAG)" \
 	GIT_SHA="$(GIT_SHA)" \
 	scripts/build-resume_ryan-wallace.sh
-
-.PHONY: build-variants
-build-variants: build-software-engineering build-ml-ai-engineering ## Build and validate both targeted resumes.
-
-.PHONY: build-software-engineering
-build-software-engineering: ## Build the software engineering resume in dist/software-engineering/.
-	$(MAKE) dist \
-		ARTIFACT_BASENAME=resume_ryan-wallace_software-engineering \
-		RESUME_TEX="$(SRC_DIR)/resume_ryan-wallace_software-engineering.tex" \
-		BUILD_DIR="$(BUILD_DIR)/software-engineering" \
-		DIST_DIR="$(DIST_DIR)/software-engineering" \
-		PAGES_BASE_URL="$(PAGES_BASE_URL)/software-engineering" \
-		UPDATED_AT="$(UPDATED_AT)" \
-		RELEASE_TAG="resume_ryan-wallace_software-engineering-$(UPDATED_AT)"
-
-.PHONY: build-ml-ai-engineering
-build-ml-ai-engineering: ## Build the ML/AI engineering resume in dist/ml-ai-engineering/.
-	$(MAKE) dist \
-		ARTIFACT_BASENAME=resume_ryan-wallace_ml-ai-engineering \
-		RESUME_TEX="$(SRC_DIR)/resume_ryan-wallace_ml-ai-engineering.tex" \
-		BUILD_DIR="$(BUILD_DIR)/ml-ai-engineering" \
-		DIST_DIR="$(DIST_DIR)/ml-ai-engineering" \
-		PAGES_BASE_URL="$(PAGES_BASE_URL)/ml-ai-engineering" \
-		UPDATED_AT="$(UPDATED_AT)" \
-		RELEASE_TAG="resume_ryan-wallace_ml-ai-engineering-$(UPDATED_AT)"
 
 .PHONY: pdf
 pdf: ## Compile only the PDF into the build directory.
@@ -75,9 +50,8 @@ dist: build ## Build and validate publishable dist artifacts.
 	$(MAKE) check-dist
 
 .PHONY: ci
-ci: precheck ## Check sources and build/validate all three resumes.
+ci: precheck ## Check sources and build/validate the resume.
 	$(MAKE) dist
-	$(MAKE) build-variants DIST_DIR="$(BUILD_DIR)/targeted-resumes"
 
 .PHONY: precheck
 precheck: check-source ## Run checks that do not require generated artifacts.
