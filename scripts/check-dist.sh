@@ -111,7 +111,7 @@ grep -q '^## Education$' "${DIST_DIR}/${MD_FILE}"
 grep -Eq '^## (Professional )?Experience$' "${DIST_DIR}/${MD_FILE}"
 grep -Eq '^## (Technical )?Skills$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^- \*\*Harvard University\*\* | Cambridge, MA$' "${DIST_DIR}/${MD_FILE}"
-grep -q '^- \*\*Federal Reserve Bank of Boston\*\* | Boston, MA$' "${DIST_DIR}/${MD_FILE}"
+grep -q '^- \*\*Federal Reserve Bank of Boston .* Research Department\*\* | Boston, MA$' "${DIST_DIR}/${MD_FILE}"
 if grep -Eq '<[^>]+>|^[[:space:]]*\|' "${DIST_DIR}/${MD_FILE}"; then
     printf 'Markdown artifact must not contain HTML tags or table syntax.\n' >&2
     exit 2
