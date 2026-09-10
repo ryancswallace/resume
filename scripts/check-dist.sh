@@ -92,7 +92,6 @@ done
 
 second_page_first_content="$(pdftotext -f 2 -l 2 -layout "${DIST_DIR}/${PDF_FILE}" - | awk '
     /^[[:space:]]*$/ { next }
-    /Ryan Wallace.*ryan@ryancswallace[.]dev/ { next }
     {
         gsub(/^[[:space:]]+|[[:space:]]+$/, "")
         print
