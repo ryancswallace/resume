@@ -77,6 +77,33 @@ for text in "${required_pdf_text[@]}"; do
     fi
 done
 
+first_page_text="$(pdftotext -f 1 -l 1 -layout "${DIST_DIR}/${PDF_FILE}" -)"
+required_first_page_projects=(
+    "Jobman ecosystem"
+    "benchmatrix"
+    "Python Project Foundry"
+)
+for project in "${required_first_page_projects[@]}"; do
+    if ! grep -Fqi "${project}" <<< "${first_page_text}"; then
+        printf 'PDF page 1 is missing project %s in %s.\n' "${project}" "${PDF_FILE}" >&2
+        exit 12
+    fi
+done
+
+second_page_first_content="$(pdftotext -f 2 -l 2 -layout "${DIST_DIR}/${PDF_FILE}" - | awk '
+    /^[[:space:]]*$/ { next }
+    /Ryan Wallace.*ryan@ryancswallace[.]dev/ { next }
+    {
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "")
+        print
+        exit
+    }
+')"
+if [[ "${second_page_first_content}" != "Earlier Experience" ]]; then
+    printf 'PDF page 2 must begin with Earlier Experience in %s.\n' "${PDF_FILE}" >&2
+    exit 13
+fi
+
 grep -q '{\\rtf' "${DIST_DIR}/${RTF_FILE}"
 grep -q '^# Ryan Wallace$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^Boston, MA | \[ryan@ryancswallace.dev\](mailto:ryan@ryancswallace.dev) | 617-852-9239$' "${DIST_DIR}/${MD_FILE}"

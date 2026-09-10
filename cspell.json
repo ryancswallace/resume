@@ -22,6 +22,7 @@
     "ignoreRegExpList": ["color: .*"],
     "words": [
         "Arrowstreet",
+        "benchmatrix",
         "biber",
         "bibtex",
         "Blinn",
@@ -43,6 +44,7 @@
         "gsub",
         "headshot",
         "inlines",
+        "Jobman",
         "lakehouse",
         "latexmk",
         "latexpand",

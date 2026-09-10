@@ -21,13 +21,7 @@ make help
 
 The [resume](src/resume_ryan-wallace.tex) is the single version used for senior
 and lead individual-contributor software engineering and ML/AI engineering
-applications and the resume page on my site. It includes the experience,
-projects, and skills from both former targeted versions, with shared material
-consolidated. The former sources remain available in Git history.
-
-The resume emphasizes architecture, performance, data systems, applied ML/AI,
-open source work, and technical leadership. It omits a summary and uses a
-two-page layout with name and email in the second-page header.
+applications and the resume page on my site.
 
 Build and validate the resume and its download page:
 
@@ -49,9 +43,10 @@ make ci
 
 This runs source checks, builds the resume, and validates its PDF,
 RTF, Markdown, and TeX artifacts, metadata, download pages, and checksums. PDF
-checks require exactly two pages and extractable name, email, and section
-headings. Builds finish before their output checks run, including with parallel
-Make execution.
+checks require exactly two pages, all three projects on page 1, Earlier
+Experience at the start of page 2, and extractable name, email, and section
+headings. Builds finish before their output checks run, including with
+parallel Make execution.
 
 CI uploads `dist/` as one review artifact with 30-day retention. On pushes to
 `main`, GitHub Pages receives `dist/`, and an archival release stores the PDF,
