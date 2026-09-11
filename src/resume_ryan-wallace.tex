@@ -86,18 +86,17 @@
   \resumeItemListStart
     \resumeItem{Architected an AWS lakehouse supporting 200+ researchers and over 10 PB of data; helped implement a migration from MariaDB ColumnStore that reduced data-platform storage costs by 75\%.}
     \resumeItem{Built a massively parallel S3 synchronization application using SQS and AWS Lambda, sustaining 1 TiB/s aggregate transfer throughput within an AWS region, including small objects.}
-    \resumeItem{Designed, implemented, and operated a Spark cluster, an Airflow deployment, and dozens of batch and streaming pipelines; built a Spark framework for microbatch ELT on Apache Iceberg.}
-    \resumeItem{Built and served a retrieval-augmented generation (RAG) application over Federal Reserve System internal reports using vLLM.}
-    \resumeItem{Designed and used a small NVIDIA H100 GPU cluster; worked with models including Llama 4 Scout through Hugging Face Transformers.}
-    \resumeItem{Fine-tuned several models using LoRA; evaluated models using human review, LLM-as-a-judge, perplexity, and embedding similarity for semantic closeness.}
-    \resumeItem{Developed transaction clustering with HDBSCAN and classification with random forests over embeddings and LightGBM; created training labels through human annotation and generative classification with constrained decoding.}
-    \resumeItem{Owned technical decisions for data science and engineering groups; led and mentored two data scientists, ran design reviews, and coordinated project teams. Initiated and led a department technical talk series.}
+    \resumeItem{Designed, built, and operated a Spark cluster, Airflow, and dozens of batch/streaming pipelines; built a Spark Structured Streaming framework for microbatch ELT on Apache Iceberg, cutting update latency from roughly a day to seconds. Reduced pipeline failures by 80\% through improved schema handling and automatic schema evolution.}
+    \resumeItem{Built and served a RAG application over Federal Reserve System internal reports using vLLM.}
+    \resumeItem{Designed and used a small NVIDIA H100 GPU cluster; ran models including Llama 4 Scout with Hugging Face Transformers. Fine-tuned several models using LoRA and evaluated model quality.}
+    \resumeItem{Saved researchers hundreds of manual-labeling hours with transaction classifiers in regular use. Combined HDBSCAN clustering, random forests over embeddings, and LightGBM; training labels used human annotation and generative classification with constrained decoding.}
+    \resumeItem{Owned technical decisions for data science and engineering; led and mentored two data scientists, ran design reviews, and coordinated projects. Directed ongoing maintenance and incident response; initiated and led the department tech talk series.}
   \resumeItemListEnd
 
   \resumeSubSubheading
     {Senior Data Scientist}{Dec 2021 -- Jan 2023}
   \resumeItemListStart
-    \resumeItem{Developed a data lake with Spark Streaming ELT and Airflow orchestration; categorized debit-card transactions across multi-terabyte datasets using text clustering and classification.}
+    \resumeItem{Built a Spark Streaming ELT/Airflow data lake; clustered and classified terabytes of debit-card transaction text.}
   \resumeItemListEnd
 
   \resumeSubSubheading
@@ -122,13 +121,13 @@
     \resumeItem{Built a job execution platform with users at the Federal Reserve. Implemented daemonless local execution, durable SQLite state, dependencies, retries, concurrency controls, and logs.}
     \resumeItem{Developed \href{https://github.com/ryancswallace/Jobman-Control}{Jobman Control}, a preview shared control plane with PostgreSQL-backed coordination, idempotent submissions, namespace quotas, OIDC authentication, and mTLS agent connections.}
     \resumeItem{Built \href{https://github.com/ryancswallace/Jobman-Diagnose}{Jobman Diagnose}, combining deterministic failure analysis with optional schema-validated LLM suggestions; preserves local findings and retry advice when providers fail or suggestions fail validation.}
+    \resumeItem{Achieved at least 95\% useful diagnoses and repeated-run consistency on a 72-case evaluation (216 model executions), with at least 98\% taxonomy and entity preservation and zero unsupported claims.}
   \resumeItemListEnd
   \resumeProjectHeading
     {\textbf{\href{https://github.com/ryancswallace/benchmatrix}{benchmatrix}} $|$ \small Python, pytest, statistics}
     {Jun 2026 -- Present}
   \resumeItemListStart
-    \resumeItem{Created a benchmarking toolkit extending pytest-benchmark with reproducible experiment matrices, repeated measurements, paired experimental designs, and statistical comparisons for performance-regression decisions.}
-    \resumeItem{Added environment compatibility checks, evidence thresholds, and machine-readable CI reports.}
+    \resumeItem{Extended pytest-benchmark with reproducible experiment matrices, repeated measurements, paired designs, statistical performance comparisons, environment compatibility checks, evidence thresholds, and machine-readable CI reports.}
   \resumeItemListEnd
 
   \resumeProjectHeading
@@ -155,7 +154,7 @@
 
   \resumeSubheading
     {Arrowstreet Capital}{Boston, MA}
-    {Research Intern}{Jun 2017 -- Aug 2017}
+    {Associate, Research}{Jun 2017 -- Aug 2017}
   \resumeItemListStart
     \resumeItem{Implemented and deployed an equity risk analysis module to production; achieved a 5x execution speedup over baseline using Numba. Applied Bayesian regression and time-series methods to portfolio risk analysis.}
   \resumeItemListEnd
@@ -173,8 +172,8 @@
   \resumeSkill{Languages}{Python; Go; SQL; Bash.}
   \resumeSkill{Data Systems}{Spark; Airflow; Apache Iceberg; PostgreSQL; SQLite; batch and stream processing.}
   \resumeSkill{Modeling}{HDBSCAN; random forests; LightGBM; scikit-learn; Bayesian regression; time-series analysis.}
-  \resumeSkill{LLMs \& Serving}{Hugging Face Transformers; LoRA; constrained decoding; RAG; vLLM; Ollama; NVIDIA H100.}
-  \resumeSkill{Evaluation}{Human review; LLM-as-a-judge; perplexity; embedding similarity; statistical benchmarking.}
+  \resumeSkill{LLMs \& Serving}{Hugging Face Transformers; LoRA; constrained decoding; retrieval-augmented generation (RAG); vLLM; Ollama; NVIDIA H100.}
+  \resumeSkill{Evaluation}{Human review; LLM-as-a-judge; perplexity; semantic embedding similarity; statistical benchmarking.}
   \resumeSkill{AWS}{S3; Athena; Lambda; Step Functions; SQS; SNS; Textract; IAM; CloudWatch.}
   \resumeSkill{Infrastructure}{Docker; Terraform; Ansible; Linux; REST APIs; OIDC; mTLS.}
   \resumeSkill{Quality \& Operations}{pytest; GitHub Actions; CI/CD; Prometheus; Grafana; performance benchmarking.}
