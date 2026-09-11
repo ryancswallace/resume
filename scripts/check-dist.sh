@@ -106,7 +106,7 @@ fi
 grep -q '{\\rtf' "${DIST_DIR}/${RTF_FILE}"
 grep -q '^# Ryan Wallace$' "${DIST_DIR}/${MD_FILE}"
 grep -q '^Boston, MA | \[ryan@ryancswallace.dev\](mailto:ryan@ryancswallace.dev) | 617-852-9239$' "${DIST_DIR}/${MD_FILE}"
-grep -q '^\[github.com/ryancswallace\](https://github.com/ryancswallace) | \[ryancswallace.dev\](https://ryancswallace.dev) | \[linkedin.com/in/ryancswallace\](https://linkedin.com/in/ryancswallace)$' "${DIST_DIR}/${MD_FILE}"
+grep -Fxq '[github.com/ryancswallace](https://github.com/ryancswallace) | **[ryancswallace.dev](https://ryancswallace.dev)** | [linkedin.com/in/ryancswallace](https://linkedin.com/in/ryancswallace)' "${DIST_DIR}/${MD_FILE}"
 grep -q '^## Education$' "${DIST_DIR}/${MD_FILE}"
 grep -Eq '^## (Professional )?Experience$' "${DIST_DIR}/${MD_FILE}"
 grep -Eq '^## (Technical )?Skills$' "${DIST_DIR}/${MD_FILE}"
@@ -138,7 +138,7 @@ if grep -Fq '\fs36 Resume\par' "${DIST_DIR}/${RTF_FILE}"; then
 fi
 grep -F '\qc \f0 \b \fs36 Ryan Wallace\par' "${DIST_DIR}/${RTF_FILE}" >/dev/null
 grep -F '\qc \f0 \b0 \fs24 Boston, MA | ' "${DIST_DIR}/${RTF_FILE}" >/dev/null
-grep -F 'github.com/ryancswallace}}} | ' "${DIST_DIR}/${RTF_FILE}" >/dev/null
+grep -F 'github.com/ryancswallace}}} | {\b {\field{\*\fldinst{HYPERLINK "https://ryancswallace.dev"}}{\fldrslt{\ul ryancswallace.dev}}}} | ' "${DIST_DIR}/${RTF_FILE}" >/dev/null
 if grep -q '\\trowd' "${DIST_DIR}/${RTF_FILE}"; then
     printf 'RTF artifact must not contain visible table structures.\n' >&2
     exit 6

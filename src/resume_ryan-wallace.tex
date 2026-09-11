@@ -74,7 +74,7 @@
   \textbf{\LARGE Ryan Wallace} \\ \vspace{3pt}
   \small Boston, MA $|$ \href{mailto:ryan@ryancswallace.dev}{\nolinkurl{ryan@ryancswallace.dev}} $|$ 617-852-9239 \\
   \href{https://github.com/ryancswallace}{\nolinkurl{github.com/ryancswallace}} $|$
-  \href{https://ryancswallace.dev}{\nolinkurl{ryancswallace.dev}} $|$
+  \textbf{\href{https://ryancswallace.dev}{\nolinkurl{ryancswallace.dev}}} $|$
   \href{https://linkedin.com/in/ryancswallace}{\nolinkurl{linkedin.com/in/ryancswallace}}
 \end{center}
 
@@ -84,25 +84,25 @@
     {Federal Reserve Bank of Boston --- Research Department}{Boston, MA}
     {Lead Data Scientist}{Jan 2023 -- Feb 2026}
   \resumeItemListStart
-    \resumeItem{Architected an AWS lakehouse supporting 200+ researchers and over 10 PB of data; helped implement a migration from MariaDB ColumnStore that reduced data-platform storage costs by 75\%.}
+    \resumeItem{Architected an AWS lakehouse supporting 200+ researchers and over 10 PB of data; helped implement a migration from MariaDB ColumnStore that reduced aggregate data platform costs by 75\%.}
+    \resumeItem{Saved researchers hundreds of hours of manual labeling with regularly used classifiers for debit-card transaction descriptions. Used HDBSCAN for clustering and trained classifiers---random forests on text embeddings and LightGBM---using human annotations and LLM-generated labels produced through constrained decoding.}
     \resumeItem{Built a massively parallel S3 synchronization application using SQS and AWS Lambda, sustaining 1 TiB/s aggregate transfer throughput within an AWS region, including small objects.}
-    \resumeItem{Designed, built, and operated a Spark cluster, Airflow, and dozens of batch/streaming pipelines; built a Spark Structured Streaming framework for microbatch ELT on Apache Iceberg, cutting update latency from roughly a day to seconds. Reduced pipeline failures by 80\% through improved schema handling and automatic schema evolution.}
-    \resumeItem{Built and served a RAG application over Federal Reserve System internal reports using vLLM.}
-    \resumeItem{Designed and used a small NVIDIA H100 GPU cluster; ran models including Llama 4 Scout with Hugging Face Transformers. Fine-tuned several models using LoRA and evaluated model quality.}
-    \resumeItem{Saved researchers hundreds of manual-labeling hours with transaction classifiers in regular use. Combined HDBSCAN clustering, random forests over embeddings, and LightGBM; training labels used human annotation and generative classification with constrained decoding.}
-    \resumeItem{Owned technical decisions for data science and engineering; led and mentored two data scientists, ran design reviews, and coordinated projects. Directed ongoing maintenance and incident response; initiated and led the department tech talk series.}
+    \resumeItem{Built and served a RAG application with vLLM for researchers to analyze Federal Reserve System internal reports using information available as of specified dates.}
+    \resumeItem{Designed and used an NVIDIA H100 GPU cluster; ran models including Llama 4 Scout with Hugging Face Transformers and fine-tuned models using LoRA. Evaluated model quality with human review, LLM-as-a-judge, perplexity, and semantic embedding similarity.}
+    \resumeItem{Led and mentored two data scientists; owned data science and engineering decisions, ran design reviews, and coordinated projects. Directed maintenance and incident response; founded and led departmental tech talks.}
   \resumeItemListEnd
 
   \resumeSubSubheading
     {Senior Data Scientist}{Dec 2021 -- Jan 2023}
   \resumeItemListStart
-    \resumeItem{Built a Spark Streaming ELT/Airflow data lake; clustered and classified terabytes of debit-card transaction text.}
+    \resumeItem{Designed, built, and operated a Spark cluster, Airflow deployment, and dozens of batch/streaming pipelines; built a Spark Structured Streaming framework for microbatch ELT on Apache Iceberg, cutting update latency from roughly a day to seconds. Reduced pipeline failures by 80\% through improved schema handling and automatic schema evolution.}
+    \resumeItem{Built a Spark Streaming ELT/Airflow data lake with dozens of data sources serving 40+ researchers.}
   \resumeItemListEnd
 
   \resumeSubSubheading
     {Data Scientist}{Dec 2020 -- Dec 2021}
   \resumeItemListStart
-    \resumeItem{Developed distributed-lag regression models and robustness checks for research on consumer spending after the CARES Act; analyzed the Main Street Lending Program using SQL and scikit-learn.}
+    \resumeItem{Developed distributed-lag regression models and robustness checks for research on consumer spending after the CARES Act.}
   \resumeItemListEnd
 
   \resumeSubSubheading
@@ -115,21 +115,20 @@
 \section{Selected Open Source Projects}
 \resumeSubHeadingListStart
   \resumeProjectHeading
-    {\textbf{\href{https://github.com/ryancswallace/Jobman}{Jobman ecosystem}} $|$ \small Go, SQLite, PostgreSQL}
+    {\textbf{\href{https://github.com/ryancswallace/Jobman}{Jobman ecosystem}} $|$ \small Go, SQLite, PostgreSQL, distributed systems}
     {Dec 2021 -- Present}
   \resumeItemListStart
-    \resumeItem{Built a job execution platform with users at the Federal Reserve. Implemented daemonless local execution, durable SQLite state, dependencies, retries, concurrency controls, and logs.}
-    \resumeItem{Developed \href{https://github.com/ryancswallace/Jobman-Control}{Jobman Control}, a preview shared control plane with PostgreSQL-backed coordination, idempotent submissions, namespace quotas, OIDC authentication, and mTLS agent connections.}
+    \resumeItem{Independently built and maintain a job execution platform used at the Federal Reserve. Implemented daemonless local execution, durable SQLite state, dependencies, retries, concurrency controls, and logs.}
+    \resumeItem{Developed \href{https://github.com/ryancswallace/Jobman-Control}{Jobman Control}, a shared control plane with PostgreSQL-backed coordination, idempotent submissions, namespace quotas, OIDC authentication, and mTLS agent connections.}
     \resumeItem{Built \href{https://github.com/ryancswallace/Jobman-Diagnose}{Jobman Diagnose}, combining deterministic failure analysis with optional schema-validated LLM suggestions; preserves local findings and retry advice when providers fail or suggestions fail validation.}
-    \resumeItem{Achieved at least 95\% useful diagnoses and repeated-run consistency on a 72-case evaluation (216 model executions), with at least 98\% taxonomy and entity preservation and zero unsupported claims.}
+    \resumeItem{Evaluated Jobman Diagnose on 72 cases across 216 model executions, achieving at least 95\% useful diagnoses and consistency across runs, at least 98\% taxonomy accuracy and entity preservation, and zero observed unsupported claims.}
   \resumeItemListEnd
   \resumeProjectHeading
     {\textbf{\href{https://github.com/ryancswallace/benchmatrix}{benchmatrix}} $|$ \small Python, pytest, statistics}
     {Jun 2026 -- Present}
   \resumeItemListStart
-    \resumeItem{Extended pytest-benchmark with reproducible experiment matrices, repeated measurements, paired designs, statistical performance comparisons, environment compatibility checks, evidence thresholds, and machine-readable CI reports.}
+    \resumeItem{Built a pytest-benchmark tool for performance regression detection with reproducible matrices, repeated runs, paired statistical comparisons, environment compatibility checks, evidence thresholds, and machine-readable CI reports.}
   \resumeItemListEnd
-
   \resumeProjectHeading
     {\textbf{\href{https://github.com/ryancswallace/python-project-foundry}{Python Project Foundry}} $|$ \small Python, GitHub Actions}
     {Sep 2025 -- Present}
@@ -152,6 +151,7 @@
     \resumeItem{Built models, analyses, and simulations and presented results to clients' technical and business teams.}
   \resumeItemListEnd
 
+  \vspace{3pt}
   \resumeSubheading
     {Arrowstreet Capital}{Boston, MA}
     {Associate, Research}{Jun 2017 -- Aug 2017}
@@ -159,6 +159,7 @@
     \resumeItem{Implemented and deployed an equity risk analysis module to production; achieved a 5x execution speedup over baseline using Numba. Applied Bayesian regression and time-series methods to portfolio risk analysis.}
   \resumeItemListEnd
 
+  \vspace{3pt}
   \resumeSubheading
     {BNY Mellon}{New York, NY}
     {Software Engineering Intern}{Jun 2016 -- Aug 2016}
@@ -174,9 +175,9 @@
   \resumeSkill{Modeling}{HDBSCAN; random forests; LightGBM; scikit-learn; Bayesian regression; time-series analysis.}
   \resumeSkill{LLMs \& Serving}{Hugging Face Transformers; LoRA; constrained decoding; retrieval-augmented generation (RAG); vLLM; Ollama; NVIDIA H100.}
   \resumeSkill{Evaluation}{Human review; LLM-as-a-judge; perplexity; semantic embedding similarity; statistical benchmarking.}
-  \resumeSkill{AWS}{S3; Athena; Lambda; Step Functions; SQS; SNS; Textract; IAM; CloudWatch.}
+  \resumeSkill{AWS}{S3; Athena; EC2; ECS; Lambda; Step Functions; RDS; SQS; SNS; Textract; IAM; CloudWatch.}
   \resumeSkill{Infrastructure}{Docker; Terraform; Ansible; Linux; REST APIs; OIDC; mTLS.}
-  \resumeSkill{Quality \& Operations}{pytest; GitHub Actions; CI/CD; Prometheus; Grafana; performance benchmarking.}
+  \resumeSkill{Quality \& Operations}{pytest; GitHub Actions; GitLab; CI/CD; Prometheus; Grafana; performance benchmarking.}
 \resumeDetailListEnd
 
 \section{Education}

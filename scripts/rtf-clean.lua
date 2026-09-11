@@ -82,6 +82,9 @@ local function raw_inline(inline)
     for _, child in ipairs(inline.content) do
       text = text .. raw_inline(child)
     end
+    if inline.t == "Strong" then
+      return "{\\b " .. text .. "}"
+    end
     return text
   end
 

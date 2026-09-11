@@ -89,6 +89,8 @@ local function contact_line(inlines)
     elseif inline.t ~= "SoftBreak" then
       if inline.t == "Link" then
         cleaned:insert(markdown_link(inline))
+      elseif inline.t == "Strong" then
+        cleaned:insert(pandoc.Strong(contact_line(inline.content)))
       else
         cleaned:insert(inline)
       end
